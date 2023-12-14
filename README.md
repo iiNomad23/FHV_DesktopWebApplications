@@ -1,2 +1,2 @@
 # FHV_DesktopWebApplications
-Implementing a ✝-platform time tracking application with [Ultralight](https://ultralig.ht) and web technologies.
+Implementing a ✝-platform time tracking desktop web application with [Ultralight](https://ultralig.ht).
