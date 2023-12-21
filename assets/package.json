@@ -1,0 +1,14 @@
+{
+  "name": "assets",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "cmake --build ../build --config Release"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/iiNomad23/FHV_DesktopWebApplications.git"
+  },
+  "private": true
+}
