@@ -1,7 +1,5 @@
 #include "MyApp.h"
 #include <iostream>
-#include <stdio.h>
-#include <sqlite3.h>
 
 #define WINDOW_WIDTH  600
 #define WINDOW_HEIGHT 400
@@ -147,20 +145,6 @@ JSValue MyApp::GetMessage(const ultralight::JSObject &thisObject, const ultralig
     ///
     /// Return our message to JavaScript as a JSValue.
     ///
-
-    sqlite3 *db;
-    char *zErrMsg = 0;
-    int rc;
-
-    rc = sqlite3_open("test.db", &db);
-
-    if( rc ) {
-        fprintf(stderr, "Can't open database: %s\n", sqlite3_errmsg(db));
-        return(0);
-    } else {
-        fprintf(stderr, "Opened database successfully\n");
-    }
-    sqlite3_close(db);
 
     cout << "test123" << endl;
     return JSValue("Hello from C++!");
