@@ -10,8 +10,9 @@ class MyApp : public AppListener,
 public:
   MyApp();
 
-  virtual ~MyApp();
+    virtual ~MyApp();
 
+   JSValue GetMessage(const JSObject& thisObject, const JSArgs& args);
   // Start the run loop.
   virtual void Run();
 
@@ -47,4 +48,5 @@ protected:
   RefPtr<App> app_;
   RefPtr<Window> window_;
   RefPtr<Overlay> overlay_;
+
 };
