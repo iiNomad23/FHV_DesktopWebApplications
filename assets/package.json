@@ -4,11 +4,16 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "cmake --build ../build --config Release"
+    "build": "cmake --build ../build --config Release",
+    "generate-css": "npx tailwindcss -i ./css/input.css -o ./css/layout.css --watch"
   },
   "repository": {
     "type": "git",
     "url": "https://github.com/iiNomad23/FHV_DesktopWebApplications.git"
   },
-  "private": true
+  "private": true,
+  "devDependencies": {
+    "daisyui": "^4.5.0",
+    "tailwindcss": "^3.4.0"
+  }
 }
