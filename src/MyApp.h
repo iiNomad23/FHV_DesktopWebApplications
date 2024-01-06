@@ -12,7 +12,7 @@ public:
 
     virtual ~MyApp();
 
-   JSValue GetMessage(const JSObject& thisObject, const JSArgs& args);
+   JSValue SaveTask(const JSObject& thisObject, const JSArgs& args);
   // Start the run loop.
   virtual void Run();
 
