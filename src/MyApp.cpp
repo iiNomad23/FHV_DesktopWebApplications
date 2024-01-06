@@ -154,18 +154,17 @@ JSValue MyApp::SaveTask(const ultralight::JSObject &thisObject, const ultralight
     if(args.size() == 1){
 
         ultralight::JSObject ultraObject = args[0];
-        cout << "value:" << endl;
-        cout <<GetValueOfProperty(ultraObject.context(), ultraObject, "taskName") << endl;
-//        // Convert Ultralight String to a C-style string (const char*)
-//        const char* cString = ultraString.utf8().data();
-//
-//        // Print the C-style string
-//        std::cout << "The Ultralight String is: " << cString << std::endl;
+        cout << "values:" << endl;
+        string taskName = GetValueOfProperty(ultraObject.context(), ultraObject, "taskName");
+        string date = GetValueOfProperty(ultraObject.context(), ultraObject, "date");
+        string startTime = GetValueOfProperty(ultraObject.context(), ultraObject, "startTime");
+        string endTime = GetValueOfProperty(ultraObject.context(), ultraObject, "endTime");
+        string comment = GetValueOfProperty(ultraObject.context(), ultraObject, "comment");
 
-
-//        ultralight::String test = args[0];
-//        cout << "arg:"<< endl;
-//        cout << test << endl;
+        string strings[] = {taskName, date, startTime, endTime, comment};
+        for (const std::string& str: strings){
+            cout << str << endl;
+        }
     }
 
     cout << thisObject.HasProperty(ultralight::JSString("taskname")) <<endl;
