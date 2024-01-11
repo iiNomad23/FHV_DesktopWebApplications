@@ -4,8 +4,8 @@
 #include <vector>
 #include "./libraries/sqlite/sqlite3.h"
 
-#define WINDOW_WIDTH  600
-#define WINDOW_HEIGHT 400
+#define WINDOW_WIDTH  1024
+#define WINDOW_HEIGHT 768
 
 using namespace std;
 void printJSValue(JSContextRef ctx, JSValueRef value);
@@ -21,8 +21,18 @@ MyApp::MyApp() {
     /// Create a resizable window by passing by OR'ing our window flags with
     /// kWindowFlags_Resizable.
     ///
-    window_ = Window::Create(app_->main_monitor(), WINDOW_WIDTH, WINDOW_HEIGHT,
-                             false, kWindowFlags_Titled | kWindowFlags_Resizable);
+    window_ = Window::Create(
+            app_->main_monitor(),
+            WINDOW_WIDTH,
+            WINDOW_HEIGHT,
+            false,
+            kWindowFlags_Titled | kWindowFlags_Resizable | kWindowFlags_Maximizable
+    );
+
+    ///
+    /// Center the window on startup
+    ///
+    window_->MoveToCenter();
 
     ///
     /// Create our HTML overlay-- we don't care about its initial size and
