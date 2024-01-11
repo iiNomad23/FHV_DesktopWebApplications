@@ -8,9 +8,13 @@
 #define WINDOW_HEIGHT 768
 
 using namespace std;
+
 void printJSValue(JSContextRef ctx, JSValueRef value);
+
 void PrintJSObject(JSContextRef ctx, JSObjectRef object);
+
 string GetValueOfProperty(JSContextRef ctx, JSObjectRef object, const char *name);
+
 MyApp::MyApp() {
     ///
     /// Create our main App instance.
@@ -100,6 +104,13 @@ void MyApp::OnResize(ultralight::Window *window, uint32_t width, uint32_t height
     ///
     /// We resize our overlay here to take up the entire window.
     ///
+    if (width < 400) {
+        width = 400;
+    }
+    if (height < 400) {
+        height = 400;
+    }
+
     overlay_->Resize(width, height);
 }
 
@@ -128,8 +139,6 @@ void MyApp::OnDOMReady(ultralight::View *caller,
     JSObject global = JSGlobalObject();
 
     global["SaveTask"] = BindJSCallbackWithRetval(&MyApp::SaveTask);
-
-
 }
 
 void MyApp::OnChangeCursor(ultralight::View *caller,
@@ -161,8 +170,7 @@ JSValue MyApp::SaveTask(const ultralight::JSObject &thisObject, const ultralight
     /// Return our message to JavaScript as a JSValue.
     ///
 
-    if(args.size() == 1){
-
+    if (args.size() == 1) {
         ultralight::JSObject ultraObject = args[0];
         cout << "values:" << endl;
         string taskName = GetValueOfProperty(ultraObject.context(), ultraObject, "taskName");
@@ -172,35 +180,25 @@ JSValue MyApp::SaveTask(const ultralight::JSObject &thisObject, const ultralight
         string comment = GetValueOfProperty(ultraObject.context(), ultraObject, "comment");
 
         string strings[] = {taskName, date, startTime, endTime, comment};
-        for (const std::string& str: strings){
+        for (const std::string &str: strings) {
             cout << str << endl;
         }
     }
 
-    cout << thisObject.HasProperty(ultralight::JSString("taskname")) <<endl;
+    cout << thisObject.HasProperty(ultralight::JSString("taskname")) << endl;
     JSValueRef test = JSObjectGetProperty(thisObject.context(), thisObject, ultralight::JSString("name"), nullptr);
     printJSValue(thisObject.context(), test);
 
-
     sqlite3 *db;
-    char *zErrMsg = 0;
-    int rc;
-
-    rc = sqlite3_open("TimeTracker.db", &db);
-
-    if( rc ) {
-
+    int rc = sqlite3_open("TimeTracker.db", &db);
+    if (rc) {
         fprintf(stderr, "Can't open database: %s\n", sqlite3_errmsg(db));
-        return(0);
+        return (0);
     }
 
     fprintf(stderr, "Opened database successfully\n");
-
-
     sqlite3_close(db);
 
-
-    cout << "test123" << endl;
     return JSValue("Hello from C++!");
 }
 
@@ -239,7 +237,7 @@ string GetValueOfProperty(JSContextRef ctx, JSObjectRef object, const char *name
     // Convert the JSValueRef to a UTF-8 encoded C-string
     JSStringRef propertyValueStringRef = JSValueToStringCopy(ctx, propertyValue, nullptr);
     size_t taskNameSize = JSStringGetMaximumUTF8CStringSize(propertyValueStringRef);
-    char* taskNameCString = new char[taskNameSize];
+    char *taskNameCString = new char[taskNameSize];
     JSStringGetUTF8CString(propertyValueStringRef, taskNameCString, taskNameSize);
 
     // Copy the C-string into a std::string, managing memory correctly
