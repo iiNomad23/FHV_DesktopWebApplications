@@ -1,5 +1,5 @@
 window.onload = () => {
-    document.getElementById("date-picker").value = new Date().toISOString().split('T')[0];
+    document.getElementById("date-picker").value = formatDate(new Date());
 
     document.getElementById("create-task-button").addEventListener("click", function () {
         openModal();
@@ -27,10 +27,8 @@ window.onload = () => {
                         </tr>`
 
         }
-
-
-
     });
+
 
 
 
@@ -70,6 +68,34 @@ window.onload = () => {
         event.preventDefault();
         clearTaskModal();
     });
+
+    let currentDate = formatDate(new Date());
+
+    let result = GetTasksByDate({date: currentDate});
+    document.getElementById("test-area").textContent = result;
+    let tasksTableBody = tasksTable.getElementsByTagName("tbody");
+    result = JSON.parse(result);
+    for (let i = 0; i < result.length; i++){
+        tasksTableBody[0].innerHTML += `<tr class="hover">
+                            <td>${i+1}</td>
+                            <td>${result[i].taskName}</td>
+                            <td>${result[i].startTime}</td>
+                            <td>${result[i].endTime}</td>
+                        </tr>`
+        //TODO: format times and fix dates in all datepickers
+    }
+
+}
+function formatDate(date) {
+    const day = date.getDate();
+    const month = date.getMonth() + 1; // getMonth() returns 0-11
+    const year = date.getFullYear();
+
+    // Add leading zero to day and month if needed
+    const formattedDay = day < 10 ? '0' + day : day;
+    const formattedMonth = month < 10 ? '0' + month : month;
+
+    return `${formattedDay}.${formattedMonth}.${year}`;
 }
 
 function convertTime(time) {
