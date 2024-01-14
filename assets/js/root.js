@@ -14,11 +14,25 @@ window.onload = () => {
         let taskName = document.getElementById("task-name-input").value;
         let date = document.getElementById("task-date-input").value;
         let startTime = document.getElementById("task-start-input").value;
+        startTime = convertTime(startTime);
+        if (startTime == null) {
+            //TODO: error handling
+            return;
+        }
+
         let endTime = document.getElementById("task-end-input").value;
+        endTime = convertTime(endTime);
+
+        if (endTime == null) {
+            //TODO: error handling
+            return;
+        }
         let comment = document.getElementById("task-comment-textarea").value;
 
         let values = [taskName, date, startTime, endTime];
+
         if (values.some(item => item == null || item === "")) {
+            //TODO: error handling
             return;
         }
 
@@ -27,12 +41,29 @@ window.onload = () => {
         SaveTask({taskName: taskName, date: date, startTime: startTime, endTime: endTime, comment: comment});
     });
 
-    document.getElementById("close-task-modal-button").addEventListener("click", function () {
+    document.getElementById("close-task-modal-button").addEventListener("click", function (event) {
+        event.preventDefault();
         clearTaskModal();
     });
 }
 
-function clearTaskModal() {
+function convertTime(time) {
+    if(time == null){
+        return null;
+    }
+    let timeArray = time.split(":");
+    if (timeArray.length <= 1) {
+        return null;
+    }
+
+    time = parseInt(timeArray[0]) * 60 + parseInt(timeArray[1]);
+    if (isNaN(time)) {
+        return null;
+    }
+    return time;
+}
+
+function clearTaskModal(){
     document.getElementById("task-comment-textarea").value = "";
     document.getElementById("task-end-input").value = "";
     document.getElementById("task-start-input").value = "";
@@ -40,7 +71,6 @@ function clearTaskModal() {
     document.getElementById("task-name-input").value = "";
     document.getElementById("create_task_modal").classList.add("hidden");
 }
-
-function openModal() {
+function openModal(){
     document.getElementById("create_task_modal").showModal();
 }

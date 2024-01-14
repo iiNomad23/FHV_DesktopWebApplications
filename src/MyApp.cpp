@@ -8,11 +8,8 @@
 #define WINDOW_HEIGHT 768
 
 using namespace std;
-
 void printJSValue(JSContextRef ctx, JSValueRef value);
-
 void PrintJSObject(JSContextRef ctx, JSObjectRef object);
-
 string GetValueOfProperty(JSContextRef ctx, JSObjectRef object, const char *name);
 
 MyApp::MyApp() {
@@ -170,7 +167,9 @@ JSValue MyApp::SaveTask(const ultralight::JSObject &thisObject, const ultralight
     /// Return our message to JavaScript as a JSValue.
     ///
 
-    if (args.size() == 1) {
+    if(args.size() == 1){
+
+        //parse values
         ultralight::JSObject ultraObject = args[0];
         cout << "values:" << endl;
         string taskName = GetValueOfProperty(ultraObject.context(), ultraObject, "taskName");
@@ -183,23 +182,82 @@ JSValue MyApp::SaveTask(const ultralight::JSObject &thisObject, const ultralight
         for (const std::string &str: strings) {
             cout << str << endl;
         }
+
+
+
+        //write to db
+        sqlite3 *db;
+        int rc;
+
+        rc = sqlite3_open("TimeTracker.db", &db);
+
+        if( rc ) {
+
+            fprintf(stderr, "Can't open database: %s\n", sqlite3_errmsg(db));
+            return(0);
+        }
+
+        const char* createDBSql = "CREATE TABLE IF NOT EXISTS tasks(id INTEGER PRIMARY KEY AUTOINCREMENT, taskName TEXT, date TEXT, startTime TEXT, endTime TEXT, comment TEXT)";
+
+        sqlite3_stmt* createDBStatement;
+        rc = sqlite3_prepare_v2(db, createDBSql, -1, &createDBStatement, nullptr);
+
+        if (rc != SQLITE_OK) {
+            cout << "error preparing sql statement" << endl;
+            return 0;
+        }
+
+
+        rc = sqlite3_step(createDBStatement);
+        if (rc != SQLITE_DONE) {
+            cout << "error executing sql statement" << endl;
+            return 0;
+        }
+
+        sqlite3_finalize(createDBStatement);
+
+
+
+        const char* sql = "INSERT INTO tasks(taskName, date, startTime, endTime, comment) VALUES (?, ?, ?, ?, ?)";
+
+        sqlite3_stmt* stmt;
+        rc = sqlite3_prepare_v2(db, sql, -1, &stmt, nullptr);
+
+        if (rc != SQLITE_OK) {
+            cout << "error preparing sql statement" << endl;
+            return 0;
+        }
+
+
+        sqlite3_bind_text(stmt, 1, taskName.c_str(), -1, SQLITE_TRANSIENT);
+        sqlite3_bind_text(stmt, 2, date.c_str(), -1, SQLITE_TRANSIENT);
+        sqlite3_bind_text(stmt, 3, startTime.c_str(), -1, SQLITE_TRANSIENT);
+        sqlite3_bind_text(stmt, 4, endTime.c_str(), -1, SQLITE_TRANSIENT);
+        sqlite3_bind_text(stmt, 5, comment.c_str(), -1, SQLITE_TRANSIENT);
+
+        rc = sqlite3_step(stmt);
+        if (rc != SQLITE_DONE) {
+            cout << "error executing sql statement" << endl;
+            return 0;
+        }
+
+        sqlite3_finalize(stmt);
+        sqlite3_close(db);
+
+        fprintf(stderr, "successfully saved to database\n");
+
+
     }
 
-    cout << thisObject.HasProperty(ultralight::JSString("taskname")) << endl;
-    JSValueRef test = JSObjectGetProperty(thisObject.context(), thisObject, ultralight::JSString("name"), nullptr);
-    printJSValue(thisObject.context(), test);
 
-    sqlite3 *db;
-    int rc = sqlite3_open("TimeTracker.db", &db);
-    if (rc) {
-        fprintf(stderr, "Can't open database: %s\n", sqlite3_errmsg(db));
-        return (0);
-    }
 
-    fprintf(stderr, "Opened database successfully\n");
-    sqlite3_close(db);
 
+    cout << "test123" << endl;
     return JSValue("Hello from C++!");
+}
+
+std::string createString() {
+    return "temporary string";
 }
 
 void printJSValue(JSContextRef ctx, JSValueRef value) {
@@ -237,7 +295,7 @@ string GetValueOfProperty(JSContextRef ctx, JSObjectRef object, const char *name
     // Convert the JSValueRef to a UTF-8 encoded C-string
     JSStringRef propertyValueStringRef = JSValueToStringCopy(ctx, propertyValue, nullptr);
     size_t taskNameSize = JSStringGetMaximumUTF8CStringSize(propertyValueStringRef);
-    char *taskNameCString = new char[taskNameSize];
+    char* taskNameCString = new char[taskNameSize];
     JSStringGetUTF8CString(propertyValueStringRef, taskNameCString, taskNameSize);
 
     // Copy the C-string into a std::string, managing memory correctly
