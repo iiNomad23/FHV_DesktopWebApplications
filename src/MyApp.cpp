@@ -3,6 +3,7 @@
 #include <cstdio>
 #include <vector>
 #include "./libraries/sqlite/sqlite3.h"
+#include "encdec.h"
 
 #define WINDOW_WIDTH  1024
 #define WINDOW_HEIGHT 768
@@ -243,6 +244,12 @@ JSValue MyApp::SaveTask(const ultralight::JSObject &thisObject, const ultralight
 
         sqlite3_finalize(stmt);
         sqlite3_close(db);
+
+        encdec encdec = *new class encdec();
+        string encrytped = encdec.encrypt(taskName.c_str());
+        string decrypted = encdec.decrypt(encrytped);
+        cout << encrytped << endl;
+        cout << decrypted << endl;
 
         fprintf(stderr, "successfully saved to database\n");
 

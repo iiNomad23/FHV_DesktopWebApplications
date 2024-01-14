@@ -6,6 +6,8 @@ include(cmake/App.cmake)
 set(SOURCES "src/MyApp.h"
             "src/MyApp.cpp"
             "src/main.cpp"
+            "src/encdec.h"
+            "src/encdec.cpp"
             "src/libraries/sqlite/sqlite3.c"
             "src/libraries/sqlite/sqlite3.h"
             "src/libraries/sqlite/sqlite3ext.h"
