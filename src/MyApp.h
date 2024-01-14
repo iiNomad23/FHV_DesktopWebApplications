@@ -13,6 +13,7 @@ public:
     virtual ~MyApp();
 
    JSValue SaveTask(const JSObject& thisObject, const JSArgs& args);
+   JSValue GetTasksByDate(const JSObject &thisObject, const JSArgs &args);
   // Start the run loop.
   virtual void Run();
 

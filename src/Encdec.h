@@ -8,9 +8,9 @@
 #include <fstream>
 using namespace std;
 
-// encdec class with encrypt() and
+// Encdec class with encrypt() and
 // decrypt() member functions
-class encdec {
+class Encdec {
     int key;
     int s = 14;
 

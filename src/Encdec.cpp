@@ -2,10 +2,10 @@
 // Created by Adrian on 14/01/2024.
 //
 
-#include "encdec.h"
+#include "Encdec.h"
 
 // Function to encrypt the plain text
-std::string encdec::encrypt(std::string text) {
+std::string Encdec::encrypt(std::string text) {
     std::string result = "";
 
     // Traverse the text
@@ -24,7 +24,7 @@ std::string encdec::encrypt(std::string text) {
 }
 
 // Function to decrypt the encrypted text
-std::string encdec::decrypt(std::string text) {
+std::string Encdec::decrypt(std::string text) {
     std::string result = "";
 
     // Traverse the text
