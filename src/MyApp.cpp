@@ -229,12 +229,12 @@ JSValue MyApp::SaveTask(const ultralight::JSObject &thisObject, const ultralight
             return 0;
         }
 
-
-        sqlite3_bind_text(stmt, 1, taskName.c_str(), -1, SQLITE_TRANSIENT);
+        encdec encrypter;
+        sqlite3_bind_text(stmt, 1, encrypter.encrypt(taskName).c_str(), -1, SQLITE_TRANSIENT);
         sqlite3_bind_text(stmt, 2, date.c_str(), -1, SQLITE_TRANSIENT);
         sqlite3_bind_text(stmt, 3, startTime.c_str(), -1, SQLITE_TRANSIENT);
         sqlite3_bind_text(stmt, 4, endTime.c_str(), -1, SQLITE_TRANSIENT);
-        sqlite3_bind_text(stmt, 5, comment.c_str(), -1, SQLITE_TRANSIENT);
+        sqlite3_bind_text(stmt, 5, encrypter.encrypt(comment).c_str(), -1, SQLITE_TRANSIENT);
 
         rc = sqlite3_step(stmt);
         if (rc != SQLITE_DONE) {
@@ -245,11 +245,6 @@ JSValue MyApp::SaveTask(const ultralight::JSObject &thisObject, const ultralight
         sqlite3_finalize(stmt);
         sqlite3_close(db);
 
-        encdec encdec = *new class encdec();
-        string encrytped = encdec.encrypt(taskName.c_str());
-        string decrypted = encdec.decrypt(encrytped);
-        cout << encrytped << endl;
-        cout << decrypted << endl;
 
         fprintf(stderr, "successfully saved to database\n");
 
