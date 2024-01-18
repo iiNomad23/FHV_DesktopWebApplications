@@ -13,21 +13,24 @@ class CppAPI {
                 date: todayDate,
             });
         } catch (e) {
-            console.warn("[root] ultralight binding error - function 'GetTasksByDate'");
+            console.warn("[CppAPI] ultralight binding error - function 'GetTasksByDate'");
         }
 
-        return [];
+        return '[]';
     }
 
     static saveTask(task) {
         if (task == null) {
-            return;
+            return false;
         }
 
         try {
             SaveTask(task);
+            return true;
         } catch (e) {
-            console.warn("[root] ultralight binding error - function 'SaveTask'");
+            console.warn("[CppAPI] ultralight binding error - function 'SaveTask'");
         }
+
+        return false;
     }
 }

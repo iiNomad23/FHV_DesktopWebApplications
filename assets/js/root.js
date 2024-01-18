@@ -1,3 +1,5 @@
+//TODO: format times and fix dates in all datepickers
+
 window.onload = () => {
     CppAPI.consoleLog("Welcome to our TimeTracker frontend");
 
@@ -12,7 +14,7 @@ window.onload = () => {
     insertTasksIntoTable(tasksJSON);
 }
 
-function insertTasksIntoTable(tasksJSON = []) {
+function insertTasksIntoTable(tasksJSON = '[]') {
     // for testing purposes
     document.getElementById("test-area").textContent = tasksJSON;
     // /
@@ -26,11 +28,26 @@ function insertTasksIntoTable(tasksJSON = []) {
         tasksTableBody[0].innerHTML += `<tr class="hover">
                             <td>${i + 1}</td>
                             <td>${tasks[i].taskName}</td>
-                            <td>${tasks[i].startTime}</td>
-                            <td>${tasks[i].endTime}</td>
+                            <td>${convertMinutesIntoTimeFormat(tasks[i].startTime)}</td>
+                            <td>${convertMinutesIntoTimeFormat(tasks[i].endTime)}</td>
                         </tr>`
-        //TODO: format times and fix dates in all datepickers
     }
+}
+
+function convertMinutesIntoTimeFormat(minutes = "0") {
+    minutes = parseInt(minutes);
+
+    let hours = Math.floor(minutes / 60);
+    if (hours < 10) {
+        hours *= 10;
+    }
+
+    let currentMinutes = minutes % 60;
+    if (currentMinutes < 10) {
+        currentMinutes *= 10;
+    }
+
+    return hours + ":" + currentMinutes;
 }
 
 function formatDate(date) {
@@ -61,12 +78,26 @@ function convertTime(time) {
     return time;
 }
 
-function clearTaskModal() {
-    document.getElementById("task-comment-textarea").value = "";
-    document.getElementById("task-end-input").value = "";
-    document.getElementById("task-start-input").value = "";
-    document.getElementById("task-date-input").value = formatDate(new Date());
-    document.getElementById("task-name-input").value = "";
+function clearTaskModal(clearValues = true) {
+    let taskNameInputEl = document.getElementById("task-name-input");
+    let dateInputEl = document.getElementById("task-date-input");
+    let startTimeInputEl = document.getElementById("task-start-input");
+    let endTimeInput = document.getElementById("task-end-input");
+    let commentTextareaEl = document.getElementById("task-comment-textarea");
+
+    if (clearValues) {
+        taskNameInputEl.value = "";
+        dateInputEl.value = formatDate(new Date());
+        startTimeInputEl.value = "";
+        endTimeInput.value = "";
+        commentTextareaEl.value = "";
+    }
+
+    let els = [taskNameInputEl, dateInputEl, startTimeInputEl, endTimeInput];
+    for (let i = 0; i < els.length; i++) {
+        els[i].classList.remove("ring-rose-300");
+    }
+
     document.getElementById("create_task_modal").classList.add("hidden");
 }
 
@@ -98,39 +129,72 @@ function setEvents() {
     document.getElementById("save-task-modal-button").addEventListener("click", function (event) {
         event.preventDefault();
 
-        let taskName = document.getElementById("task-name-input").value;
-        let date = document.getElementById("task-date-input").value;
-        let startTime = document.getElementById("task-start-input").value;
-        startTime = convertTime(startTime);
-        if (startTime == null) {
-            //TODO: error handling
-            return;
-        }
+        let taskNameInputEl = document.getElementById("task-name-input");
+        let dateInputEl = document.getElementById("task-date-input");
+        let startTimeInputEl = document.getElementById("task-start-input");
+        let endTimeInput = document.getElementById("task-end-input");
+        let commentTextareaEl = document.getElementById("task-comment-textarea");
 
-        let endTime = document.getElementById("task-end-input").value;
+        let taskName = taskNameInputEl.value;
+        let date = dateInputEl.value;
+        let startTime = startTimeInputEl.value;
+        let endTime = endTimeInput.value;
+        let comment = commentTextareaEl.value;
+
+        startTime = convertTime(startTime);
         endTime = convertTime(endTime);
 
-        if (endTime == null) {
-            //TODO: error handling
+        let validationObject = {
+            taskName: {
+                el: taskNameInputEl,
+                value: taskName,
+                isValid: false,
+            },
+            date: {
+                el: dateInputEl,
+                value: date,
+                isValid: false,
+            },
+            startTime: {
+                el: startTimeInputEl,
+                value: startTime,
+                isValid: false,
+            },
+            endTime: {
+                el: endTimeInput,
+                value: endTime,
+                isValid: false,
+            }
+        }
+
+        let invalidFieldExist = false;
+        for (const valueObj of Object.values(validationObject)) {
+            if (valueObj.value != null && valueObj.value !== "") {
+                valueObj.isValid = true;
+                valueObj.el.classList.remove("ring-rose-300");
+            } else {
+                valueObj.el.classList.add("ring-rose-300");
+                invalidFieldExist = true;
+            }
+        }
+
+        if (invalidFieldExist) {
             return;
         }
-        let comment = document.getElementById("task-comment-textarea").value;
-        let values = [taskName, date, startTime, endTime];
 
-        if (values.some(item => item == null || item === "")) {
-            //TODO: error handling
-            return;
-        }
-
-        closeModal();
-        
-        CppAPI.saveTask({
+        let success = CppAPI.saveTask({
             taskName: taskName,
             date: date,
             startTime: startTime,
             endTime: endTime,
             comment: comment
         });
+
+        if (success) {
+            closeModal();
+        } else {
+            console.warn("[root] Error at saving task!");
+        }
     });
 
     document.getElementById("close-task-modal-button").addEventListener("click", function (event) {
