@@ -1,11 +1,13 @@
 window.onload = () => {
-    document.getElementById("date-picker").value = formatDate(new Date());
-    document.getElementById("task-date-input").value = formatDate(new Date());
+    let todayDate = formatDate(new Date());
+
+    document.getElementById("date-picker").value = todayDate;
+    document.getElementById("task-date-input").value = todayDate;
 
     setEvents();
 
     let tasksJSON = GetTasksByDate({
-        date: formatDate(new Date()),
+        date: todayDate,
     });
 
     insertTasksIntoTable(tasksJSON);
@@ -72,7 +74,24 @@ function clearTaskModal() {
 }
 
 function openModal() {
-    document.getElementById("create_task_modal").showModal();
+    let createTaskModalEl = document.getElementById("create_task_modal");
+    if (createTaskModalEl == null) {
+        return; // :(
+    }
+
+    createTaskModalEl.showModal();
+    createTaskModalEl.classList.remove("hidden");
+}
+
+function closeModal() {
+    clearTaskModal();
+
+    let createTaskModalEl = document.getElementById("create_task_modal");
+    if (createTaskModalEl == null) {
+        return; // :(
+    }
+
+    createTaskModalEl.classList.add("hidden");
 }
 
 function setEvents() {
@@ -80,12 +99,9 @@ function setEvents() {
         openModal();
     });
 
-    document.getElementById("create-task-button").addEventListener("click", function () {
-        document.getElementById("create_task_modal").classList.remove("hidden");
-    });
-
     document.getElementById("save-task-modal-button").addEventListener("click", function (event) {
         event.preventDefault();
+
         let taskName = document.getElementById("task-name-input").value;
         let date = document.getElementById("task-date-input").value;
         let startTime = document.getElementById("task-start-input").value;
@@ -110,34 +126,21 @@ function setEvents() {
             return;
         }
 
-        clearTaskModal()
-        document.getElementById("create_task_modal").classList.add("hidden");
+        closeModal();
         SaveTask({taskName: taskName, date: date, startTime: startTime, endTime: endTime, comment: comment});
     });
 
     document.getElementById("close-task-modal-button").addEventListener("click", function (event) {
         event.preventDefault();
-        clearTaskModal();
+        closeModal();
     });
 
     // for testing purposes
     document.getElementById("test-button").addEventListener("click", function () {
-        let result = GetTasksByDate({date: "12.07.2020"});
-        document.getElementById("test-area").textContent = result;
+        let tasksJSON = GetTasksByDate({
+            date: "12.07.2020",
+        });
 
-        let tasksTableBody = document
-            .getElementById("tasks-table")
-            .getElementsByTagName("tbody");
-
-        result = JSON.parse(result);
-        for (let i = 0; i < result.length; i++) {
-            tasksTableBody[0].innerHTML += `<tr class="hover">
-                            <td>${i + 1}</td>
-                            <td>${result[i].taskName}</td>
-                            <td>${result[i].startTime}</td>
-                            <td>${result[i].endTime}</td>
-                        </tr>`
-
-        }
+        insertTasksIntoTable(tasksJSON);
     });
 }
