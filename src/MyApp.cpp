@@ -181,7 +181,7 @@ JSValue MyApp::SaveTask(const ultralight::JSObject &thisObject, const ultralight
     cout << "Called: SaveTask" << endl;
 
     if (args.size() == 1) {
-        //parse values
+        // parse values
         ultralight::JSObject ultraObject = args[0];
         cout << "values:" << endl;
         string taskName = GetValueOfProperty(ultraObject.context(), ultraObject, "taskName");
@@ -195,16 +195,11 @@ JSValue MyApp::SaveTask(const ultralight::JSObject &thisObject, const ultralight
             cout << str << endl;
         }
 
-
-
-        //write to db
+        // write to db
         sqlite3 *db;
-        int rc;
-
-        rc = sqlite3_open("TimeTracker.db", &db);
+        int rc = sqlite3_open("TimeTracker.db", &db);
 
         if (rc) {
-
             fprintf(stderr, "Can't open database: %s\n", sqlite3_errmsg(db));
             return (0);
         }
@@ -219,7 +214,6 @@ JSValue MyApp::SaveTask(const ultralight::JSObject &thisObject, const ultralight
             return 0;
         }
 
-
         rc = sqlite3_step(createDBStatement);
         if (rc != SQLITE_DONE) {
             cout << "error executing sql statement" << endl;
@@ -227,7 +221,6 @@ JSValue MyApp::SaveTask(const ultralight::JSObject &thisObject, const ultralight
         }
 
         sqlite3_finalize(createDBStatement);
-
 
         const char *sql = "INSERT INTO tasks(taskName, date, startTime, endTime, comment) VALUES (?, ?, ?, ?, ?)";
 
@@ -266,19 +259,15 @@ JSValue MyApp::GetTasksByDate(const ultralight::JSObject &thisObject, const ultr
     cout << "Called: GetTasksByDate" << endl;
 
     if (args.size() == 1) {
-        //parse values
+        // parse values
         ultralight::JSObject ultraObject = args[0];
         cout << "values:" << endl;
         string date = GetValueOfProperty(ultraObject.context(), ultraObject, "date");
         cout << date << endl;
 
         sqlite3 *db;
-        int rc;
-
-        rc = sqlite3_open("TimeTracker.db", &db);
-
+        int rc = sqlite3_open("TimeTracker.db", &db);
         if (rc) {
-
             fprintf(stderr, "Can't open database: %s\n", sqlite3_errmsg(db));
             return (0);
         }
@@ -293,7 +282,6 @@ JSValue MyApp::GetTasksByDate(const ultralight::JSObject &thisObject, const ultr
             return 0;
         }
 
-
         rc = sqlite3_step(createDBStatement);
         if (rc != SQLITE_DONE) {
             cout << "error executing sql statement" << endl;
@@ -301,7 +289,6 @@ JSValue MyApp::GetTasksByDate(const ultralight::JSObject &thisObject, const ultr
         }
 
         sqlite3_finalize(createDBStatement);
-
 
         const char *sql = "SELECT * FROM tasks WHERE date = ?";
 
@@ -312,7 +299,6 @@ JSValue MyApp::GetTasksByDate(const ultralight::JSObject &thisObject, const ultr
             cout << "error preparing sql statement" << endl;
             return 0;
         }
-
 
         Encdec encrypter;
         sqlite3_bind_text(stmt, 1, date.c_str(), -1, SQLITE_TRANSIENT);
@@ -340,22 +326,27 @@ JSValue MyApp::GetTasksByDate(const ultralight::JSObject &thisObject, const ultr
             cout << task.comment << endl;
             cout << "------------------" << endl;
 
-            result.push_back(json{{"taskName",  task.taskName},
-                                  {"date",      task.date},
-                                  {"startTime", task.startTime},
-                                  {"endTime",   task.endTime},
-                                  {"comment",   task.comment}});
+            result.push_back(
+                    json{
+                            {"taskName",  encrypter.decrypt(task.taskName)},
+                            {"date",      task.date},
+                            {"startTime", task.startTime},
+                            {"endTime",   task.endTime},
+                            {"comment",   encrypter.decrypt(task.comment)}
+                    }
+            );
         }
+
         cout << "done" << endl;
         sqlite3_finalize(stmt);
         sqlite3_close(db);
-
 
         cout << result << endl;
         string resultString = result.dump();
         cout << "end" << endl;
         return resultString.c_str();
     }
+
     return 0;
 }
 
