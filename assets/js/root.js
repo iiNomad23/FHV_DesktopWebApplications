@@ -1,27 +1,18 @@
 window.onload = () => {
+    CppAPI.consoleLog("Welcome to our TimeTracker frontend");
+
     let todayDate = formatDate(new Date());
 
     document.getElementById("date-picker").value = todayDate;
     document.getElementById("task-date-input").value = todayDate;
 
-    // CppConsoleLog("TEst");
-
     setEvents();
 
-    if (window.GetTasksByDate instanceof Function) {
-        let tasksJSON = GetTasksByDate({
-            date: todayDate,
-        });
-
-        insertTasksIntoTable(tasksJSON);
-    } else {
-        console.warn("[root] ultralight binding error - function 'GetTasksByDate'");
-    }
+    let tasksJSON = CppAPI.getTasksByDate(todayDate);
+    insertTasksIntoTable(tasksJSON);
 }
 
-function insertTasksIntoTable(tasksJSON) {
-    tasksJSON = tasksJSON ?? [];
-
+function insertTasksIntoTable(tasksJSON = []) {
     // for testing purposes
     document.getElementById("test-area").textContent = tasksJSON;
     // /
@@ -132,12 +123,14 @@ function setEvents() {
         }
 
         closeModal();
-
-        if (window.SaveTask instanceof Function) {
-            SaveTask({taskName: taskName, date: date, startTime: startTime, endTime: endTime, comment: comment});
-        } else {
-            console.warn("[root] ultralight binding error - function 'SaveTask'");
-        }
+        
+        CppAPI.saveTask({
+            taskName: taskName,
+            date: date,
+            startTime: startTime,
+            endTime: endTime,
+            comment: comment
+        });
     });
 
     document.getElementById("close-task-modal-button").addEventListener("click", function (event) {
@@ -147,10 +140,7 @@ function setEvents() {
 
     // for testing purposes
     document.getElementById("test-button").addEventListener("click", function () {
-        let tasksJSON = GetTasksByDate({
-            date: "12.07.2020",
-        });
-
+        let tasksJSON = CppAPI.getTasksByDate("12.07.2020");
         insertTasksIntoTable(tasksJSON);
     });
 }

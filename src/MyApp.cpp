@@ -146,7 +146,7 @@ void MyApp::OnDOMReady(ultralight::View *caller,
 
     global["SaveTask"] = BindJSCallbackWithRetval(&MyApp::SaveTask);
     global["GetTasksByDate"] = BindJSCallbackWithRetval(&MyApp::GetTasksByDate);
-    //global["CppConsoleLog"] = BindJSCallback(&MyApp::CppConsoleLog);
+    global["CppConsoleLog"] = BindJSCallback(&MyApp::CppConsoleLog);
 }
 
 void MyApp::OnChangeCursor(ultralight::View *caller,
@@ -359,13 +359,14 @@ JSValue MyApp::GetTasksByDate(const ultralight::JSObject &thisObject, const ultr
     return 0;
 }
 
-//void MyApp::CppConsoleLog(const ultralight::JSObject &thisObject, const ultralight::JSArgs &args) {
-//    cout << "Called: CppConsoleLog" << endl;
-//
-//    if (args.size() == 1) {
-//        cout << args.size() << endl;
-//    }
-//}
+void MyApp::CppConsoleLog(const ultralight::JSObject &thisObject, const ultralight::JSArgs &args) {
+    cout << "Called: CppConsoleLog" << endl;
+
+    if (args.size() == 1) {
+        ultralight::String jsMessage = args[0];
+        cout << jsMessage.utf8().data() << endl;
+    }
+}
 
 void to_json(json &j, const Task &task) {
     j = json{{"taskName",  task.taskName},
