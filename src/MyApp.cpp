@@ -170,15 +170,12 @@ void MyApp::OnChangeTitle(ultralight::View *caller,
 
 ///
 /// Our native JavaScript callback. This function will be called from JavaScript by calling
-/// GetMessage(). We bind the callback within the DOMReady callback defined below.
+/// SaveTask(). We bind the callback within the DOMReady callback defined below.
 ///
 JSValue MyApp::SaveTask(const ultralight::JSObject &thisObject, const ultralight::JSArgs &args) {
-    ///
-    /// Return our message to JavaScript as a JSValue.
-    ///
+    cout << "Called: SaveTask" << endl;
 
     if (args.size() == 1) {
-
         //parse values
         ultralight::JSObject ultraObject = args[0];
         cout << "values:" << endl;
@@ -255,18 +252,15 @@ JSValue MyApp::SaveTask(const ultralight::JSObject &thisObject, const ultralight
 
 
         fprintf(stderr, "successfully saved to database\n");
-
-
     }
 
-
-    cout << "test123" << endl;
-    return JSValue("Hello from C++!");
+    return JSValue("Successfully saved Task");
 }
 
 JSValue MyApp::GetTasksByDate(const ultralight::JSObject &thisObject, const ultralight::JSArgs &args) {
-    if (args.size() == 1) {
+    cout << "Called: GetTasksByDate" << endl;
 
+    if (args.size() == 1) {
         //parse values
         ultralight::JSObject ultraObject = args[0];
         cout << "values:" << endl;
