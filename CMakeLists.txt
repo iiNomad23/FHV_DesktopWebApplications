@@ -1,26 +1,44 @@
 project(MyApp C CXX)
 cmake_minimum_required(VERSION 3.3.2)
+set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-include(cmake/App.cmake)
+# Google Test Configuration
+include(FetchContent)
+FetchContent_Declare(
+        googletest
+        URL https://github.com/google/googletest/archive/03597a01ee50ed33e9dfd640b249b4be3799d395.zip
+)
+set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
+FetchContent_MakeAvailable(googletest)
+enable_testing()
 
-set(SOURCES "src/MyApp.h"
-            "src/MyApp.cpp"
-            "src/main.cpp"
-            "src/Encdec.h"
-            "src/Encdec.cpp"
-            "src/Task.h"
-            "src/libraries/sqlite/sqlite3.c"
-            "src/libraries/sqlite/sqlite3.h"
-            "src/libraries/sqlite/sqlite3ext.h"
-            "src/libraries/sqlite/shell.c"
+# Application Source Files
+set(APP_SOURCES
+        "src/MyApp.h"
+        "src/MyApp.cpp"
+        "src/main.cpp"
+        "src/Encdec.h"
+        "src/Encdec.cpp"
+        "src/libraries/sqlite/sqlite3.c"
+        "src/libraries/sqlite/sqlite3.h"
+        "src/libraries/sqlite/sqlite3ext.h"
+        "src/libraries/sqlite/shell.c"
+        # Include other source files here
 )
 
-add_app("${SOURCES}")
+# Test Source Files
+set(TEST_SOURCES
+        "src/hello_test.cc"
+        # Include other test files here
+)
 
-#find_package(SQLite3)
-#include_directories(/src/libraries/sqlite)
-#
-#add_executable(MyApp2 main.cpp)
-#
-#target_link_libraries(MyApp2 /src/libraries/sqlite)
+# Test Executable
+add_executable(hello_test ${TEST_SOURCES} "src/Encdec.cpp")
+target_link_libraries(hello_test GTest::gtest_main)
+include(GoogleTest)
+gtest_discover_tests(hello_test)
 
+# Main Application Executable
+include(cmake/App.cmake)
+add_app("${APP_SOURCES}")
