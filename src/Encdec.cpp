@@ -1,44 +1,37 @@
 //
 // Created by Adrian on 14/01/2024.
 //
+// Takes ASCII Values starting from 32 (Space) up to 127.
+// This includes all lower and uppercase letters as well as numbers
+// and special characters.
+//
 
 #include "Encdec.h"
 
-// Function to encrypt the plain text
 std::string Encdec::encrypt(std::string text) {
     std::string result = "";
 
-    // Traverse the text
     for (int i = 0; i < text.length(); i++) {
-        // Apply transformation to each character
-        // Encrypt Uppercase letters
-        if (isupper(text[i]))
-            result += char(int(text[i] + s - 65) % 26 + 65);
+        int base = 32;
+        int rangeSize = 95; // 32+95 = 127 (all remaining ascii characters)
 
-            // Encrypt Lowercase letters
-        else
-            result += char(int(text[i] + s - 97) % 26 + 97);
+        result += char((int(text[i] - base + s) % rangeSize) + base);
     }
 
     return result;
 }
 
-// Function to decrypt the encrypted text
 std::string Encdec::decrypt(std::string text) {
     std::string result = "";
 
-    // Traverse the text
     for (int i = 0; i < text.length(); i++) {
-        // Apply transformation to each character
-        // Encrypt Uppercase letters
-        if (isupper(text[i]))
-            result += char(int(text[i] + (26 - s) - 65) % 26 + 65);
+        int base = 32;
+        int rangeSize = 95;
 
-            // Encrypt Lowercase letters
-        else
-            result += char(int(text[i]+ (26 - s) - 97) % 26 + 97);
+        result += char((int(text[i] - base - s + rangeSize) % rangeSize) + base);
     }
 
     return result;
 }
+
 

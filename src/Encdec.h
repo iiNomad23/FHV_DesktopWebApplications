@@ -12,7 +12,7 @@ using namespace std;
 // decrypt() member functions
 class Encdec {
     int key;
-    int s = 14;
+    int s = 1;
 
 public:
     std::string encrypt(string text);

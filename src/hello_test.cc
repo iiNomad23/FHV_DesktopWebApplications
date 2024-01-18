@@ -1,23 +1,13 @@
 #include <gtest/gtest.h>
 #include "Encdec.h"
 
-//// Demonstrate some basic assertions.
-//TEST(HelloTest, BasicAssertions) {
-//// Expect two strings not to be equal.
-//EXPECT_STRNE("hello", "world");
-//// Expect equality.
-//EXPECT_EQ(7 * 6, 42);
-//}
-
 TEST(HelloTest, BassicAssertions){
     Encdec encrypter;
 
-    const char* original = "Hello World 42!";
-    string encrypted = encrypter.encrypt(original);
+    //const char* original = "Hello World!1222";
+    std::string original = "Hello World! 123 ~~";
+    std::string encrypted = encrypter.encrypt(original);
+    std::string decrypted = encrypter.decrypt(encrypted);
 
-    const char* decrypted = (encrypter.decrypt(encrypted).c_str());
-
-    EXPECT_STREQ(original, decrypted);
-
-
+    EXPECT_EQ(original, decrypted);
 }
