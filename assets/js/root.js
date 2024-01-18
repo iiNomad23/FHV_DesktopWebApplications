@@ -4,13 +4,19 @@ window.onload = () => {
     document.getElementById("date-picker").value = todayDate;
     document.getElementById("task-date-input").value = todayDate;
 
+    // CppConsoleLog("TEst");
+
     setEvents();
 
-    let tasksJSON = GetTasksByDate({
-        date: todayDate,
-    });
+    if (window.GetTasksByDate instanceof Function) {
+        let tasksJSON = GetTasksByDate({
+            date: todayDate,
+        });
 
-    insertTasksIntoTable(tasksJSON);
+        insertTasksIntoTable(tasksJSON);
+    } else {
+        console.warn("[root] ultralight binding error - function 'GetTasksByDate'");
+    }
 }
 
 function insertTasksIntoTable(tasksJSON) {
@@ -79,7 +85,6 @@ function openModal() {
         return; // :(
     }
 
-    createTaskModalEl.showModal();
     createTaskModalEl.classList.remove("hidden");
 }
 
@@ -127,7 +132,12 @@ function setEvents() {
         }
 
         closeModal();
-        SaveTask({taskName: taskName, date: date, startTime: startTime, endTime: endTime, comment: comment});
+
+        if (window.SaveTask instanceof Function) {
+            SaveTask({taskName: taskName, date: date, startTime: startTime, endTime: endTime, comment: comment});
+        } else {
+            console.warn("[root] ultralight binding error - function 'SaveTask'");
+        }
     });
 
     document.getElementById("close-task-modal-button").addEventListener("click", function (event) {

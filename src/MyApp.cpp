@@ -146,6 +146,7 @@ void MyApp::OnDOMReady(ultralight::View *caller,
 
     global["SaveTask"] = BindJSCallbackWithRetval(&MyApp::SaveTask);
     global["GetTasksByDate"] = BindJSCallbackWithRetval(&MyApp::GetTasksByDate);
+    //global["CppConsoleLog"] = BindJSCallback(&MyApp::CppConsoleLog);
 }
 
 void MyApp::OnChangeCursor(ultralight::View *caller,
@@ -170,9 +171,13 @@ void MyApp::OnChangeTitle(ultralight::View *caller,
 
 ///
 /// Our native JavaScript callback. This function will be called from JavaScript by calling
-/// SaveTask(). We bind the callback within the DOMReady callback defined below.
+/// GetMessage(). We bind the callback within the DOMReady callback defined below.
 ///
 JSValue MyApp::SaveTask(const ultralight::JSObject &thisObject, const ultralight::JSArgs &args) {
+    ///
+    /// Return our message to JavaScript as a JSValue.
+    ///
+
     cout << "Called: SaveTask" << endl;
 
     if (args.size() == 1) {
@@ -353,6 +358,14 @@ JSValue MyApp::GetTasksByDate(const ultralight::JSObject &thisObject, const ultr
     }
     return 0;
 }
+
+//void MyApp::CppConsoleLog(const ultralight::JSObject &thisObject, const ultralight::JSArgs &args) {
+//    cout << "Called: CppConsoleLog" << endl;
+//
+//    if (args.size() == 1) {
+//        cout << args.size() << endl;
+//    }
+//}
 
 void to_json(json &j, const Task &task) {
     j = json{{"taskName",  task.taskName},
