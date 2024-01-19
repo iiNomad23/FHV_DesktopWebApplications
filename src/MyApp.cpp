@@ -207,6 +207,12 @@ JSValue MyApp::SaveTask(const ultralight::JSObject &thisObject, const ultralight
 
     // write to db
     sqlite3 *db;
+    int rc = sqlite3_open("TimeTracker.db", &db);
+
+    if (rc) {
+        fprintf(stderr, "Can't open database: %s\n", sqlite3_errmsg(db));
+        return (0);
+    }
 
     if(CreateTasksTableIfNotExist(db)){
         return 0;
@@ -215,7 +221,7 @@ JSValue MyApp::SaveTask(const ultralight::JSObject &thisObject, const ultralight
     const char *sql = "INSERT INTO tasks(taskName, date, startTime, endTime, comment) VALUES (?, ?, ?, ?, ?)";
 
     sqlite3_stmt *stmt;
-    int rc = sqlite3_prepare_v2(db, sql, -1, &stmt, nullptr);
+    rc = sqlite3_prepare_v2(db, sql, -1, &stmt, nullptr);
 
     if (rc != SQLITE_OK) {
         cout << "error preparing sql statement" << endl;
@@ -414,6 +420,13 @@ JSValue MyApp::GetTasksByDate(const ultralight::JSObject &thisObject, const ultr
     cout << date << endl;
 
     sqlite3 *db;
+    int rc = sqlite3_open("TimeTracker.db", &db);
+
+    if (rc) {
+        fprintf(stderr, "Can't open database: %s\n", sqlite3_errmsg(db));
+        return (0);
+    }
+
     if(CreateTasksTableIfNotExist(db)){
         return 0;
     }
@@ -422,7 +435,7 @@ JSValue MyApp::GetTasksByDate(const ultralight::JSObject &thisObject, const ultr
     const char *sql = "SELECT * FROM tasks WHERE date = ?";
 
     sqlite3_stmt *stmt;
-    int rc = sqlite3_prepare_v2(db, sql, -1, &stmt, nullptr);
+    rc = sqlite3_prepare_v2(db, sql, -1, &stmt, nullptr);
 
     if (rc != SQLITE_OK) {
         cout << "error preparing sql statement" << endl;
@@ -488,6 +501,13 @@ JSValue MyApp::GetTaskById(const ultralight::JSObject &thisObject, const ultrali
     int id = args[0];
 
     sqlite3 *db;
+    int rc = sqlite3_open("TimeTracker.db", &db);
+
+    if (rc) {
+        fprintf(stderr, "Can't open database: %s\n", sqlite3_errmsg(db));
+        return (0);
+    }
+
     if(CreateTasksTableIfNotExist(db)){
         return 0;
     }
@@ -495,7 +515,7 @@ JSValue MyApp::GetTaskById(const ultralight::JSObject &thisObject, const ultrali
     const char *sql = "SELECT * FROM tasks WHERE id = ?";
 
     sqlite3_stmt *stmt;
-    int rc = sqlite3_prepare_v2(db, sql, -1, &stmt, nullptr);
+    rc = sqlite3_prepare_v2(db, sql, -1, &stmt, nullptr);
 
     if (rc != SQLITE_OK) {
         cout << "error preparing sql statement" << endl;
@@ -564,6 +584,12 @@ JSValue MyApp::SavePreset(const ultralight::JSObject &thisObject, const ultralig
 
     // write to db
     sqlite3 *db;
+    int rc = sqlite3_open("TimeTracker.db", &db);
+
+    if (rc) {
+        fprintf(stderr, "Can't open database: %s\n", sqlite3_errmsg(db));
+        return (0);
+    }
 
     if(CreatePresetsTableIfNotExist(db)){
         return 0;
@@ -573,7 +599,7 @@ JSValue MyApp::SavePreset(const ultralight::JSObject &thisObject, const ultralig
     const char *sql = "INSERT INTO presets(name) VALUES (?)";
 
     sqlite3_stmt *stmt;
-    int rc = sqlite3_prepare_v2(db, sql, -1, &stmt, nullptr);
+    rc = sqlite3_prepare_v2(db, sql, -1, &stmt, nullptr);
 
     if (rc != SQLITE_OK) {
         cout << "error preparing sql statement" << endl;
@@ -601,6 +627,15 @@ JSValue MyApp::GetAllPresets(const ultralight::JSObject &thisObject, const ultra
     cout << "Called: GetAllPresets" << endl;
 
     sqlite3 *db;
+
+    int rc = sqlite3_open("TimeTracker.db", &db);
+
+    if (rc) {
+        fprintf(stderr, "Can't open database: %s\n", sqlite3_errmsg(db));
+        return (0);
+    }
+
+
     if(CreatePresetsTableIfNotExist(db)){
         return 0;
     }
@@ -608,7 +643,7 @@ JSValue MyApp::GetAllPresets(const ultralight::JSObject &thisObject, const ultra
     const char *sql = "SELECT * FROM presets";
 
     sqlite3_stmt *stmt;
-    int rc = sqlite3_prepare_v2(db, sql, -1, &stmt, nullptr);
+    rc = sqlite3_prepare_v2(db, sql, -1, &stmt, nullptr);
 
     if (rc != SQLITE_OK) {
         cout << "error preparing sql statement" << endl;
@@ -664,6 +699,13 @@ JSValue MyApp::DeletePreset(const ultralight::JSObject &thisObject, const ultral
 
     // write to db
     sqlite3 *db;
+    int rc = sqlite3_open("TimeTracker.db", &db);
+
+    if (rc) {
+        fprintf(stderr, "Can't open database: %s\n", sqlite3_errmsg(db));
+        return (0);
+    }
+
     if(CreatePresetsTableIfNotExist(db)){
         return 0;
     }
@@ -671,7 +713,7 @@ JSValue MyApp::DeletePreset(const ultralight::JSObject &thisObject, const ultral
     const char *sql = "DELETE FROM presets WHERE name = ?";
 
     sqlite3_stmt *stmt;
-    int rc = sqlite3_prepare_v2(db, sql, -1, &stmt, nullptr);
+    rc = sqlite3_prepare_v2(db, sql, -1, &stmt, nullptr);
 
     if (rc != SQLITE_OK) {
         cout << "error preparing sql statement" << endl;
@@ -767,17 +809,11 @@ string GetValueOfProperty(JSContextRef ctx, JSObjectRef object, const char *name
 }
 
 int CreateTasksTableIfNotExist(sqlite3 *db){
-    int rc = sqlite3_open("TimeTracker.db", &db);
-
-    if (rc) {
-        fprintf(stderr, "Can't open database: %s\n", sqlite3_errmsg(db));
-        return (0);
-    }
 
     const char *createDBSql = "CREATE TABLE IF NOT EXISTS tasks(id INTEGER PRIMARY KEY AUTOINCREMENT, taskName TEXT, date TEXT, startTime TEXT, endTime TEXT, comment TEXT)";
 
     sqlite3_stmt *createDBStatement;
-    rc = sqlite3_prepare_v2(db, createDBSql, -1, &createDBStatement, nullptr);
+    int rc = sqlite3_prepare_v2(db, createDBSql, -1, &createDBStatement, nullptr);
 
     if (rc != SQLITE_OK) {
         cout << "error preparing sql statement" << endl;
@@ -796,17 +832,11 @@ int CreateTasksTableIfNotExist(sqlite3 *db){
 }
 
 int CreatePresetsTableIfNotExist(sqlite3 *db){
-    int rc = sqlite3_open("TimeTracker.db", &db);
-
-    if (rc) {
-        fprintf(stderr, "Can't open database: %s\n", sqlite3_errmsg(db));
-        return (0);
-    }
 
     const char *createDBSql = "CREATE TABLE IF NOT EXISTS tasks(id INTEGER PRIMARY KEY AUTOINCREMENT, taskName TEXT, date TEXT, startTime TEXT, endTime TEXT, comment TEXT)";
 
     sqlite3_stmt *createDBStatement;
-    rc = sqlite3_prepare_v2(db, createDBSql, -1, &createDBStatement, nullptr);
+    int rc = sqlite3_prepare_v2(db, createDBSql, -1, &createDBStatement, nullptr);
 
     if (rc != SQLITE_OK) {
         cout << "error preparing sql statement" << endl;
