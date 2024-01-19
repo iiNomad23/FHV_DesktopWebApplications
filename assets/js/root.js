@@ -182,6 +182,17 @@ function setEvents() {
         openModal();
     });
 
+    document.getElementById("search-button").addEventListener("click", function (){
+        let tasksTableBody = document
+            .getElementById("tasks-table")
+            .getElementsByTagName("tbody")[0];
+
+        tasksTableBody.innerHTML = "";
+
+        let tasks = CppAPI.getTasksByDate(document.getElementById("date-picker").value);
+        insertTasksIntoTable(tasks);
+    });
+
     document.getElementById("save-task-modal-button").addEventListener("click", function (event) {
         event.preventDefault();
 
