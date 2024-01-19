@@ -17,7 +17,7 @@ public:
 
     JSValue GetTasksByDate(const JSObject &thisObject, const JSArgs &args);
 
-    JSValue DeleteTasksById(const JSObject &thisObject, const JSArgs &args);
+    JSValue DeleteTaskById(const JSObject &thisObject, const JSArgs &args);
 
     void CppConsoleLog(const ultralight::JSObject &thisObject, const ultralight::JSArgs &args);
 

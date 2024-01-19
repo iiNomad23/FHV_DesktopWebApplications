@@ -147,6 +147,7 @@ void MyApp::OnDOMReady(ultralight::View *caller,
     global["SaveTask"] = BindJSCallbackWithRetval(&MyApp::SaveTask);
     global["GetTasksByDate"] = BindJSCallbackWithRetval(&MyApp::GetTasksByDate);
     global["CppConsoleLog"] = BindJSCallback(&MyApp::CppConsoleLog);
+    global["DeleteTaskById"] = BindJSCallbackWithRetval(&MyApp::DeleteTaskById);
 }
 
 void MyApp::OnChangeCursor(ultralight::View *caller,
@@ -255,7 +256,7 @@ JSValue MyApp::SaveTask(const ultralight::JSObject &thisObject, const ultralight
 
     return JSValue("Successfully saved Task");
 }
-JSValue MyApp::DeleteTasksById(const ultralight::JSObject &thisObject, const ultralight::JSArgs &args) {
+JSValue MyApp::DeleteTaskById(const ultralight::JSObject &thisObject, const ultralight::JSArgs &args) {
     cout << "Called: DeleteTasksById" << endl;
 
     if (args.size() != 1) {
@@ -263,6 +264,56 @@ JSValue MyApp::DeleteTasksById(const ultralight::JSObject &thisObject, const ult
     }
 
     int taskId = args[0];
+    sqlite3 *db;
+    int rc = sqlite3_open("TimeTracker.db", &db);
+    if (rc) {
+        fprintf(stderr, "Can't open database: %s\n", sqlite3_errmsg(db));
+        return (0);
+    }
+
+    const char *createDBSql = "CREATE TABLE IF NOT EXISTS tasks(id INTEGER PRIMARY KEY AUTOINCREMENT, taskName TEXT, date TEXT, startTime TEXT, endTime TEXT, comment TEXT)";
+
+    sqlite3_stmt *createDBStatement;
+    rc = sqlite3_prepare_v2(db, createDBSql, -1, &createDBStatement, nullptr);
+
+    if (rc != SQLITE_OK) {
+        cout << "error preparing sql statement" << endl;
+        return 0;
+    }
+
+    rc = sqlite3_step(createDBStatement);
+    if (rc != SQLITE_DONE) {
+        cout << "error executing sql statement" << endl;
+        return 0;
+    }
+
+    sqlite3_finalize(createDBStatement);
+
+    const char *sql = "DELETE FROM tasks WHERE id = ?";
+
+    sqlite3_stmt *stmt;
+    rc = sqlite3_prepare_v2(db, sql, -1, &stmt, nullptr);
+
+    if (rc != SQLITE_OK) {
+        cout << "error preparing sql statement" << endl;
+        return 0;
+    }
+
+    sqlite3_bind_int(stmt, 1, taskId);
+
+    rc = sqlite3_step(stmt);
+    if (rc != SQLITE_DONE) {
+        cout << "error executing sql statement" << endl;
+        return 0;
+    }
+
+    sqlite3_finalize(stmt);
+    sqlite3_close(db);
+
+    fprintf(stderr, "successfully deleted task\n");
+
+    return JSValue("Successfully deleted Task");
+
 }
 
 
