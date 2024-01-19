@@ -254,6 +254,11 @@ JSValue MyApp::SaveTask(const ultralight::JSObject &thisObject, const ultralight
 
     return JSValue("Successfully saved Task");
 }
+//JSValue MyApp::DeleteTasksById(const ultralight::JSObject &thisObject, const ultralight::JSArgs &args) {
+//
+//
+//}
+
 
 JSValue MyApp::GetTasksByDate(const ultralight::JSObject &thisObject, const ultralight::JSArgs &args) {
     cout << "Called: GetTasksByDate" << endl;
@@ -328,6 +333,7 @@ JSValue MyApp::GetTasksByDate(const ultralight::JSObject &thisObject, const ultr
 
             result.push_back(
                     json{
+                            {"id", task.id},
                             {"taskName",  encrypter.decrypt(task.taskName)},
                             {"date",      task.date},
                             {"startTime", task.startTime},
