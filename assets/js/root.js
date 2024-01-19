@@ -40,6 +40,7 @@ function insertTasksIntoTable(tasks = []) {
             let taskId = e.currentTarget.getAttribute('data-taskId');
             let task = CppAPI.getTaskById(taskId)[0];
             if (Object.keys(task).length === 0) {
+                CppAPI.consoleLog("[root] Error at GetTaskById!");
                 return; // :(
             }
 
@@ -61,6 +62,7 @@ function insertTasksIntoTable(tasks = []) {
 function removeTableRow(taskId) {
     let rowEl = document.getElementById("row_" + taskId);
     if (rowEl == null) {
+        CppAPI.consoleLog("[root] Error removing table row!");
         return; // :(
     }
 
@@ -137,18 +139,27 @@ function clearTaskModal(clearValues = true) {
 function openModal(task) {
     let createTaskModalEl = document.getElementById("create_task_modal");
     if (createTaskModalEl == null) {
+        CppAPI.consoleLog("[root] Error opening modal!");
+        return; // :(
+    }
+
+    let tagEl = createTaskModalEl.getElementsByTagName("h3")[0];
+    if (tagEl == null) {
+        CppAPI.consoleLog("[root] Error opening modal!");
         return; // :(
     }
 
     if (task != null) {
-        createTaskModalEl.getElementsByTagName("h3")[0].textContent = "Edit Task";
+        tagEl.textContent = "Edit Task";
+        tagEl.setAttribute('data-taskId', task.id);
         document.getElementById("task-name-input").value = task.taskName;
         document.getElementById("task-date-input").value = task.date;
         document.getElementById("task-start-input").value = convertMinutesIntoTimeFormat(task.startTime);
         document.getElementById("task-end-input").value = convertMinutesIntoTimeFormat(task.endTime);
         document.getElementById("task-comment-textarea").value = task.comment;
     } else {
-        createTaskModalEl.getElementsByTagName("h3")[0].textContent = "Create Task";
+        tagEl.textContent = "Create Task";
+        tagEl.removeAttribute('data-taskId');
     }
 
     createTaskModalEl.classList.remove("hidden");
@@ -159,6 +170,7 @@ function closeModal() {
 
     let createTaskModalEl = document.getElementById("create_task_modal");
     if (createTaskModalEl == null) {
+        CppAPI.consoleLog("[root] Error closing modal!");
         return; // :(
     }
 
@@ -243,6 +255,20 @@ function setEvents() {
         };
 
         if (isEditWindow()) {
+            let createTaskModalEl = document.getElementById("create_task_modal");
+            if (createTaskModalEl == null) {
+                CppAPI.consoleLog("[root] Error at updating task!");
+                return; // :(
+            }
+
+            let tagEl = createTaskModalEl.getElementsByTagName("h3")[0];
+            if (tagEl == null) {
+                CppAPI.consoleLog("[root] Error at updating task!");
+                return; // :(
+            }
+
+            task["id"] = tagEl.getAttribute("data-taskId");
+
             let success = CppAPI.updateTask(task);
             if (success) {
                 closeModal();
