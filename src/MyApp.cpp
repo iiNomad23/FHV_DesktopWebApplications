@@ -18,6 +18,7 @@ void printJSValue(JSContextRef ctx, JSValueRef value);
 void PrintJSObject(JSContextRef ctx, JSObjectRef object);
 int CreateTasksTableIfNotExist(sqlite3 *db);
 int CreatePresetsTableIfNotExist(sqlite3 *db);
+int GetMostRecentTaskId();
 void to_json(json &j, const Task &task);
 
 string GetValueOfProperty(JSContextRef ctx, JSObjectRef object, const char *name);
@@ -243,25 +244,38 @@ JSValue MyApp::SaveTask(const ultralight::JSObject &thisObject, const ultralight
     }
 
     sqlite3_finalize(stmt);
+    sqlite3_close(db);
+
+    int taskId = GetMostRecentTaskId();
+
+    fprintf(stderr, "successfully saved to database\n");
+
+    return taskId;
+}
+
+int GetMostRecentTaskId(){
+    sqlite3 *db;
+    int rc = sqlite3_open("TimeTracker.db", &db);
+    if (rc) {
+        fprintf(stderr, "Can't open database: %s\n", sqlite3_errmsg(db));
+        return (0);
+    }
 
     int taskId;
-    const char *getCurrentTaskId = "SELECT * FROM table ORDER BY id DESC LIMIT 1";
-
-    rc = sqlite3_prepare_v2(db, getCurrentTaskId, -1, &stmt, nullptr);
+    const char *getCurrentTaskIdSQL = "SELECT * FROM tasks ORDER BY id DESC LIMIT 1";
+    sqlite3_stmt *getTaskIdStmt;
+    rc = sqlite3_prepare_v2(db, getCurrentTaskIdSQL, -1, &getTaskIdStmt, nullptr);
 
     if (rc != SQLITE_OK) {
         cout << "error preparing sql statement" << endl;
         return 0;
     }
 
-    while (sqlite3_step(stmt) == SQLITE_ROW) {
-        taskId = sqlite3_column_int(stmt, 0);
+    while (sqlite3_step(getTaskIdStmt) == SQLITE_ROW) {
+        taskId = sqlite3_column_int(getTaskIdStmt, 0);
     }
-    sqlite3_finalize(stmt);
+    sqlite3_finalize(getTaskIdStmt);
     sqlite3_close(db);
-
-    fprintf(stderr, "successfully saved to database\n");
-
     return taskId;
 }
 
