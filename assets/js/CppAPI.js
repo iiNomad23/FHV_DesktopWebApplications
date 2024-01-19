@@ -3,7 +3,7 @@ class CppAPI {
         try {
             CppConsoleLog(str);
         } catch (e) {
-            console.log(str);
+            console.warn("[CppAPI] ultralight binding error - function 'CppConsoleLog'");
         }
     }
 
@@ -15,30 +15,30 @@ class CppAPI {
 
             return JSON.parse(jsonStr);
         } catch (e) {
-            console.warn("[CppAPI] ultralight binding error - function 'GetTasksByDate'");
+            CppAPI.consoleLog("[CppAPI] ultralight binding error - function 'GetTasksByDate'");
         }
 
         return [];
     }
 
-    static getTasksById(taskId) {
+    static getTaskById(taskId) {
         if (taskId == null) {
-            return {};
+            return [{}];
         }
 
         taskId = parseInt(taskId);
         if (isNaN(taskId) || taskId < 1) {
-            return {};
+            return [{}];
         }
 
         try {
-            let jsonStr = GetTasksById(taskId);
+            let jsonStr = GetTaskById(taskId);
             return JSON.parse(jsonStr);
         } catch (e) {
-            console.warn("[CppAPI] ultralight binding error - function 'GetTasksById'");
+            CppAPI.consoleLog("[CppAPI] ultralight binding error - function 'GetTasksById'");
         }
 
-        return {};
+        return [{}];
     }
 
     static saveTask(task) {
@@ -49,7 +49,7 @@ class CppAPI {
         try {
             return SaveTask(task);
         } catch (e) {
-            console.warn("[CppAPI] ultralight binding error - function 'SaveTask'");
+            CppAPI.consoleLog("[CppAPI] ultralight binding error - function 'SaveTask'");
         }
 
         return 0;
@@ -71,7 +71,7 @@ class CppAPI {
                 return true;
             }
         } catch (e) {
-            console.warn("[CppAPI] ultralight binding error - function 'DeleteTaskById'");
+            CppAPI.consoleLog("[CppAPI] ultralight binding error - function 'DeleteTaskById'");
         }
 
         return false;
@@ -88,7 +88,7 @@ class CppAPI {
                 return true;
             }
         } catch (e) {
-            console.warn("[CppAPI] ultralight binding error - function 'UpdateTask'");
+            CppAPI.consoleLog("[CppAPI] ultralight binding error - function 'UpdateTask'");
         }
 
         return false;

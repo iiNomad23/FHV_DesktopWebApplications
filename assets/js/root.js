@@ -25,37 +25,46 @@ function insertTasksIntoTable(tasks = []) {
             continue;
         }
 
-        CppAPI.consoleLog(task.id);
         tasksTableBody[0].innerHTML += `<tr id="${"row_" + task.id}" class="hover">
                             <td></td>
                             <td>${task.taskName}</td>
                             <td>${convertMinutesIntoTimeFormat(task.startTime)}</td>
                             <td>${convertMinutesIntoTimeFormat(task.endTime)}</td>
                             <td style="float: right">${getEditAndDeleteButtonHTML(task.id)}</td>
-                        </tr>`
+                        </tr>`;
+    }
 
-        document.getElementById("edit_" + task.id).addEventListener("click", function (e) {
+    let editBtnEls = document.querySelectorAll('[id^="edit_"]');
+    editBtnEls.forEach(function(editBtnEl) {
+        editBtnEl.addEventListener("click", function (e) {
             let taskId = e.currentTarget.getAttribute('data-taskId');
-            let task = CppAPI.getTasksById(taskId);
+            let task = CppAPI.getTaskById(taskId)[0];
             if (Object.keys(task).length === 0) {
                 return; // :(
             }
 
-            openModal();
+            openModal(task);
         });
-        document.getElementById("delete_" + task.id).addEventListener("click", function (e) {
+    });
+
+    let deleteBtnEls = document.querySelectorAll('[id^="delete_"]');
+    deleteBtnEls.forEach(function(deleteBtnEl) {
+        deleteBtnEl.addEventListener("click", function (e) {
             let taskId = e.currentTarget.getAttribute('data-taskId');
-
             if (CppAPI.deleteTaskById(taskId)) {
-                let rowEl = document.getElementById("row_" + taskId);
-                if (rowEl == null) {
-                    return; // :(
-                }
-
-                rowEl.remove();
+                removeTableRow(taskId);
             }
         });
+    });
+}
+
+function removeTableRow(taskId) {
+    let rowEl = document.getElementById("row_" + taskId);
+    if (rowEl == null) {
+        return; // :(
     }
+
+    rowEl.remove();
 }
 
 function convertMinutesIntoTimeFormat(minutes = "0") {
@@ -63,12 +72,12 @@ function convertMinutesIntoTimeFormat(minutes = "0") {
 
     let hours = Math.floor(minutes / 60);
     if (hours < 10) {
-        hours *= 10;
+        hours += "0";
     }
 
     let currentMinutes = minutes % 60;
     if (currentMinutes < 10) {
-        currentMinutes *= 10;
+        currentMinutes += "0";
     }
 
     return hours + ":" + currentMinutes;
@@ -132,14 +141,14 @@ function openModal(task) {
     }
 
     if (task != null) {
-        createTaskModalEl.getElementsByTagName("h3")[0] = "Edit Task";
-        createTaskModalEl.getElementById("task-name-input").value = task.taskName;
-        createTaskModalEl.getElementById("task-date-input").value = task.date;
-        createTaskModalEl.getElementById("task-start-input").value = convertMinutesIntoTimeFormat(task.startTime);
-        createTaskModalEl.getElementById("task-end-input").value = convertMinutesIntoTimeFormat(task.endTime);
-        createTaskModalEl.getElementById("task-comment-textarea").value = task.comment;
+        createTaskModalEl.getElementsByTagName("h3")[0].textContent = "Edit Task";
+        document.getElementById("task-name-input").value = task.taskName;
+        document.getElementById("task-date-input").value = task.date;
+        document.getElementById("task-start-input").value = convertMinutesIntoTimeFormat(task.startTime);
+        document.getElementById("task-end-input").value = convertMinutesIntoTimeFormat(task.endTime);
+        document.getElementById("task-comment-textarea").value = task.comment;
     } else {
-        createTaskModalEl.getElementsByTagName("h3")[0] = "Create Task";
+        createTaskModalEl.getElementsByTagName("h3")[0].textContent = "Create Task";
     }
 
     createTaskModalEl.classList.remove("hidden");
@@ -183,29 +192,37 @@ function setEvents() {
             taskName: {
                 el: taskNameInputEl,
                 value: taskName,
-                isValid: false,
             },
             date: {
                 el: dateInputEl,
                 value: date,
-                isValid: false,
             },
             startTime: {
                 el: startTimeInputEl,
                 value: startTime,
-                isValid: false,
             },
             endTime: {
                 el: endTimeInput,
                 value: endTime,
-                isValid: false,
             }
-        }
+        };
 
         let invalidFieldExist = false;
-        for (const valueObj of Object.values(validationObject)) {
+        for (const [key, valueObj] of Object.entries(validationObject)) {
+            let isValidValue = false;
             if (valueObj.value != null && valueObj.value !== "") {
-                valueObj.isValid = true;
+                if (key === "startTime" || key === "endTime") {
+                    if (valueObj.value < validationObject.endTime.value) {
+                        isValidValue = true;
+                    } else if (valueObj.value > validationObject.startTime.value) {
+                        isValidValue = true;
+                    }
+                } else {
+                    isValidValue = true;
+                }
+            }
+
+            if (isValidValue) {
                 valueObj.el.classList.remove("ring-rose-300");
             } else {
                 valueObj.el.classList.add("ring-rose-300");
@@ -225,16 +242,26 @@ function setEvents() {
             comment: comment
         };
 
-        let taskId = CppAPI.saveTask(task);
-        CppAPI.consoleLog(taskId);
+        if (isEditWindow()) {
+            let success = CppAPI.updateTask(task);
+            if (success) {
+                closeModal();
 
-        if (taskId > 0) {
-            closeModal();
-
-            task["id"] = taskId;
-            insertTasksIntoTable([task]);
+                removeTableRow(task.id);
+                insertTasksIntoTable([task]);
+            } else {
+                CppAPI.consoleLog("[root] Error at updating task!");
+            }
         } else {
-            console.warn("[root] Error at saving task!");
+            let taskId = CppAPI.saveTask(task);
+            if (taskId > 0) {
+                closeModal();
+
+                task["id"] = taskId;
+                insertTasksIntoTable([task]);
+            } else {
+                CppAPI.consoleLog("[root] Error at saving task!");
+            }
         }
     });
 
@@ -250,6 +277,20 @@ function setEvents() {
     });
 }
 
+function isEditWindow() {
+    let createTaskModalEl = document.getElementById("create_task_modal");
+    if (createTaskModalEl == null) {
+        return false;
+    }
+
+    let tagEl = createTaskModalEl.getElementsByTagName("h3")[0];
+    if (tagEl == null) {
+        return false;
+    }
+
+    return tagEl.textContent === "Edit Task";
+}
+
 function getEditAndDeleteButtonHTML(taskId) {
     return `<div class="flex flex-row items-center justify-between" role="group">
                 <button id="${"edit_" + taskId}" data-taskId="${taskId}" type="button" class="pr-1 border-0 text-sm font-medium text-gray-500 border-gray-200 dark:border-gray-600 dark:text-gray-300">
@@ -263,5 +304,5 @@ function getEditAndDeleteButtonHTML(taskId) {
                         <path d="M17 4h-4V2a2 2 0 0 0-2-2H7a2 2 0 0 0-2 2v2H1a1 1 0 0 0 0 2h1v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V6h1a1 1 0 1 0 0-2ZM7 2h4v2H7V2Zm1 14a1 1 0 1 1-2 0V8a1 1 0 0 1 2 0v8Zm4 0a1 1 0 0 1-2 0V8a1 1 0 0 1 2 0v8Z"/>
                     </svg>
                 </button>
-            </div>`
+            </div>`;
 }
