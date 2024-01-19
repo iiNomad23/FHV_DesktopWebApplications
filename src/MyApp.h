@@ -25,6 +25,8 @@ public:
 
     JSValue GetAllPresets(const JSObject &thisObject, const JSArgs &args);
 
+    JSValue DeletePreset(const JSObject &thisObject, const JSArgs &args);
+
     void CppConsoleLog(const JSObject &thisObject, const JSArgs &args);
 
     // Start the run loop.
