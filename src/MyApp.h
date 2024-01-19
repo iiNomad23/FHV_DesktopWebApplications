@@ -17,6 +17,8 @@ public:
 
     JSValue GetTasksByDate(const JSObject &thisObject, const JSArgs &args);
 
+    JSValue GetTaskById(const JSObject &thisObject, const JSArgs &args);
+
     JSValue DeleteTaskById(const JSObject &thisObject, const JSArgs &args);
 
     JSValue UpdateTask(const JSObject &thisObject, const JSArgs &args);

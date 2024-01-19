@@ -147,6 +147,7 @@ void MyApp::OnDOMReady(ultralight::View *caller,
 
     global["SaveTask"] = BindJSCallbackWithRetval(&MyApp::SaveTask);
     global["GetTasksByDate"] = BindJSCallbackWithRetval(&MyApp::GetTasksByDate);
+    global["GetTaskById"] = BindJSCallbackWithRetval(&MyApp::GetTaskById);
     global["CppConsoleLog"] = BindJSCallback(&MyApp::CppConsoleLog);
     global["DeleteTaskById"] = BindJSCallbackWithRetval(&MyApp::DeleteTaskById);
     global["UpdateTask"] = BindJSCallbackWithRetval(&MyApp::UpdateTask);
@@ -460,6 +461,76 @@ JSValue MyApp::GetTasksByDate(const ultralight::JSObject &thisObject, const ultr
     return resultString.c_str();
 }
 
+JSValue MyApp::GetTaskById(const ultralight::JSObject &thisObject, const ultralight::JSArgs &args) {
+    cout << "Called: GetTasksByDate" << endl;
+
+    if (args.size() != 1) {
+        return 0;
+    }
+
+    // parse values
+    int id = args[0];
+
+    sqlite3 *db;
+    if(CreateTasksTableIfNotExist(db)){
+        return 0;
+    }
+
+    const char *sql = "SELECT * FROM tasks WHERE id = ?";
+
+    sqlite3_stmt *stmt;
+    int rc = sqlite3_prepare_v2(db, sql, -1, &stmt, nullptr);
+
+    if (rc != SQLITE_OK) {
+        cout << "error preparing sql statement" << endl;
+        return 0;
+    }
+
+    Encdec encrypter;
+    sqlite3_bind_int(stmt, 1, id);
+
+    vector<Task> tasks;
+    // Execute the query and process the results
+    while (sqlite3_step(stmt) == SQLITE_ROW) {
+        int id = sqlite3_column_int(stmt, 0);
+        const char *name = reinterpret_cast<const char *>(sqlite3_column_text(stmt, 1));
+        const char *date = reinterpret_cast<const char *>(sqlite3_column_text(stmt, 2));
+        const char *startTime = reinterpret_cast<const char *>(sqlite3_column_text(stmt, 3));
+        const char *endTime = reinterpret_cast<const char *>(sqlite3_column_text(stmt, 4));
+        const char *comment = reinterpret_cast<const char *>(sqlite3_column_text(stmt, 5));
+
+        std::string str(name);
+        tasks.emplace_back(id, name, date, startTime, endTime, comment);
+    }
+
+    json result;
+    for (const auto &task: tasks) {
+        cout << task.taskName << endl;
+        cout << task.date << endl;
+        cout << task.startTime << endl;
+        cout << task.endTime << endl;
+        cout << task.comment << endl;
+        cout << "------------------" << endl;
+
+        result.push_back(
+                json{
+                        {"id", task.id},
+                        {"taskName",  encrypter.decrypt(task.taskName)},
+                        {"date",      task.date},
+                        {"startTime", task.startTime},
+                        {"endTime",   task.endTime},
+                        {"comment",   encrypter.decrypt(task.comment)}
+                }
+        );
+    }
+
+    sqlite3_finalize(stmt);
+    sqlite3_close(db);
+
+    string resultString = result.dump();
+    return resultString.c_str();
+}
+
 JSValue MyApp::SavePreset(const ultralight::JSObject &thisObject, const ultralight::JSArgs &args) {
     ///
     /// Return our message to JavaScript as a JSValue.
@@ -580,7 +651,6 @@ JSValue MyApp::DeletePreset(const ultralight::JSObject &thisObject, const ultral
     if(CreatePresetsTableIfNotExist(db)){
         return 0;
     }
-
 
     const char *sql = "DELETE FROM presets WHERE name = ?";
 
