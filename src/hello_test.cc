@@ -15,7 +15,7 @@ TEST(EncryptionTest, BassicAssertions){
     EXPECT_EQ(original, decrypted);
 }
 
-//TEST(DatabaseTest, BassicAssertions){
+//TEST(DatabaseTest, BasicAssertions){
 //    //given
 //    MyApp myApp;
 //    sqlite3 *db;

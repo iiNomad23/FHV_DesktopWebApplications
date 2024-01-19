@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="halloween">
+<head>
+    <title>Time Tracker</title>
+    <link href="./css/layout.css" rel="stylesheet">
+    <script src="./js/CppAPI.js"></script>
+</head>
+<body class="overflow-hidden">
+
+<!--  <button class="btn" onclick="my_modal_1.showModal()">open modal</button>-->
+<!--  <dialog id="my_modal_1" class="modal">-->
+<!--    <div class="modal-box">-->
+<!--      <h3 class="font-bold text-lg">Hello!</h3>-->
+<!--      <p class="py-4">Press ESC key or click the button below to close</p>-->
+<!--      <div class="modal-action">-->
+<!--        <form method="dialog">-->
+<!--          &lt;!&ndash; if there is a button in form, it will close the modal &ndash;&gt;-->
+<!--          <button class="btn">Close</button>-->
+<!--        </form>-->
+<!--      </div>-->
+<!--    </div>-->
+<!--  </dialog>-->
+<div id="create_task_modal" class="absolute w-full min-h-screen bg-gray-900 bg-opacity-50 z-50 hidden">
+    <div class="absolute w-6/12 z-50 bg-base-100 rounded-lg left-[25%] top-[20%]" style="">
+        <div class="w-full p-4">
+            <h3 class="font-bold text-lg pb-2">Create Task</h3>
+            <div class="flex flex-row">
+                <div class="flex flex-col mr-2 content-center w-[150px] min-w-[100px]">
+                    <div class="mb-3">
+                        <label for="task-name-input">Name*</label>
+                    </div>
+                    <div class="mb-3">
+                        <label>Date*</label>
+                    </div>
+
+                    <div class="mb-3">
+                        <label>Start Time*</label>
+                    </div>
+                    <div class="mb-3">
+                        <label>End Time*</label>
+                    </div>
+                    <div class="mb-3">
+                        <label>Comment</label>
+                    </div>
+                </div>
+                <div class="flex flex-col content-center w-full overflow-auto">
+                    <div class="mb-3">
+                        <input class="rounded-md border-0 pl-1.5 text-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 sm:text-sm sm:leading-6 focus:outline-none"
+                               id="task-name-input" type="text"/>
+
+                    </div>
+                    <div class="mb-3">
+                        <input class="rounded-md border-0 pl-1.5 text-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 sm:text-sm sm:leading-6 focus:outline-none"
+                               id="task-date-input" type="date"/>
+                    </div>
+                    <!--                    TODO: Implement TimePicker-->
+                    <div class="mb-3">
+                        <input class="rounded-md border-0 pl-1.5 text-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 sm:text-sm sm:leading-6 focus:outline-none"
+                               id="task-start-input" type="text"/>
+                    </div>
+                    <div class="mb-3">
+                        <input class="rounded-md border-0 pl-1.5 text-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 sm:text-sm sm:leading-6 focus:outline-none"
+                               id="task-end-input" type="text"/>
+                    </div>
+                    <div class="mb-3">
+                        <textarea
+                                class="rounded-md border-0 pl-1.5 text-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 sm:text-sm sm:leading-6 focus:outline-none w-8/12"
+                                id="task-comment-textarea"></textarea>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="modal-action">
+                <form method="dialog">
+                    <!-- if there is a button in form, it will close the modal -->
+                    <button id="save-task-modal-button" class="btn btn-primary">Save</button>
+                    <button id="close-task-modal-button" class="btn">Close</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="navbar bg-base-100">
+    <div class="flex-none">
+        <label for="my-drawer-2" class="btn btn-square btn-ghost lg:hidden">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                 class="inline-block w-5 h-5 stroke-current">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M4 6h16M4 12h16M4 18h16"></path>
+            </svg>
+        </label>
+
+    </div>
+    <div class="flex-1">
+        <a class="btn btn-ghost text-xl">MargopsTimeTracker</a>
+    </div>
+    <div class="flex-none">
+        <button class="btn btn-square btn-ghost">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                 class="inline-block w-5 h-5 stroke-current">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M5 12h.01M12 12h.01M19 12h.01M6 12a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0z"></path>
+            </svg>
+        </button>
+    </div>
+</div>
+<div class="drawer lg:drawer-open">
+    <input id="my-drawer-2" type="checkbox" class="drawer-toggle"/>
+    <div class="drawer-content flex flex-col items-start">
+
+
+
+        <!-- Page content here -->
+        <!--      <label for="my-drawer-2" class="btn btn-primary drawer-button lg:hidden">Open drawer</label>-->
+
+        <input type="checkbox" value="dark" class="toggle theme-controller"/>
+        <button id="test-button" style="float:right" class="btn btn-primary btn-sm">TEST</button>
+        <textarea id="test-area">Placeholder</textarea>
+
+
+    </div>
+    <div class="drawer-side">
+        <label for="my-drawer-2" aria-label="close sidebar" class="drawer-overlay"></label>
+        <ul class="menu p-4 w-80 min-h-full bg-base-200 text-base-content">
+            <!-- Sidebar content here -->
+            <li class="m-2"><a href="./app.html">Task Overview</a></li>
+            <li class="m-2"><a href="./presets.html">Presets</a></li>
+        </ul>
+
+
+    </div>
+</div>
+
+
+</body>
+</html>
