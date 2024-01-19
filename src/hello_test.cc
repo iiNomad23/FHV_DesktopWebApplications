@@ -1,6 +1,7 @@
 #include <gtest/gtest.h>
 #include "Encdec.h"
 #include "MyApp.h"
+#include "./libraries/sqlite/sqlite3.h"
 
 JSObject CreateJSObject();
 
@@ -13,7 +14,7 @@ TEST(EncryptionTest, BassicAssertions){
 
     EXPECT_EQ(original, decrypted);
 }
-//
+
 //TEST(DatabaseTest, BassicAssertions){
 //    //given
 //    MyApp myApp;
@@ -42,7 +43,7 @@ TEST(EncryptionTest, BassicAssertions){
 //
 //
 //}
-//
+
 //JSObject CreateJSObject() {
 //    // Get the JSContext
 //    JSContextRef ctx = JSGlobalContextCreate(NULL);;

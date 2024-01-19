@@ -373,13 +373,13 @@ JSValue MyApp::UpdateTask(const ultralight::JSObject &thisObject, const ultralig
     rc = sqlite3_prepare_v2(db, createDBSql, -1, &createDBStatement, nullptr);
 
     if (rc != SQLITE_OK) {
-        cout << "error preparing sql statement" << endl;
+        cout << "create table error preparing sql statement" << endl;
         return 0;
     }
 
     rc = sqlite3_step(createDBStatement);
     if (rc != SQLITE_DONE) {
-        cout << "error executing sql statement" << endl;
+        cout << "create table error executing sql statement" << endl;
         return 0;
     }
 
@@ -387,9 +387,9 @@ JSValue MyApp::UpdateTask(const ultralight::JSObject &thisObject, const ultralig
 
     const char *sql = "UPDATE tasks "
                       "SET taskName = ?,"
-                      "date = ?"
-                      "startTime = ?"
-                      "endTime = ?"
+                      "date = ?,"
+                      "startTime = ?,"
+                      "endTime = ?,"
                       "comment = ?"
                       "WHERE id = ?";
 
@@ -418,7 +418,7 @@ JSValue MyApp::UpdateTask(const ultralight::JSObject &thisObject, const ultralig
     sqlite3_finalize(stmt);
     sqlite3_close(db);
 
-    fprintf(stderr, "successfully deleted task\n");
+    cout << "successfully updated task" << endl;
 
     return 1;
 
