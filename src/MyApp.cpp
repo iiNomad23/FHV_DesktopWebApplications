@@ -214,7 +214,8 @@ JSValue MyApp::SaveTask(const ultralight::JSObject &thisObject, const ultralight
         return (0);
     }
 
-    if(CreateTasksTableIfNotExist(db)){
+    if(!CreateTasksTableIfNotExist(db)){
+        cout << "error creating table" << endl;
         return 0;
     }
 
@@ -427,7 +428,8 @@ JSValue MyApp::GetTasksByDate(const ultralight::JSObject &thisObject, const ultr
         return (0);
     }
 
-    if(CreateTasksTableIfNotExist(db)){
+    if(!CreateTasksTableIfNotExist(db)){
+        cout << "error creating table" << endl;
         return 0;
     }
 
@@ -508,7 +510,8 @@ JSValue MyApp::GetTaskById(const ultralight::JSObject &thisObject, const ultrali
         return (0);
     }
 
-    if(CreateTasksTableIfNotExist(db)){
+    if(!CreateTasksTableIfNotExist(db)){
+        cout << "error creating table" << endl;
         return 0;
     }
 
@@ -591,7 +594,8 @@ JSValue MyApp::SavePreset(const ultralight::JSObject &thisObject, const ultralig
         return (0);
     }
 
-    if(CreatePresetsTableIfNotExist(db)){
+    if(!CreatePresetsTableIfNotExist(db)){
+        cout << "error creating table" << endl;
         return 0;
     }
 
@@ -636,7 +640,8 @@ JSValue MyApp::GetAllPresets(const ultralight::JSObject &thisObject, const ultra
     }
 
 
-    if(CreatePresetsTableIfNotExist(db)){
+    if(!CreatePresetsTableIfNotExist(db)){
+        cout << "error creating table" << endl;
         return 0;
     }
 
@@ -706,7 +711,8 @@ JSValue MyApp::DeletePreset(const ultralight::JSObject &thisObject, const ultral
         return (0);
     }
 
-    if(CreatePresetsTableIfNotExist(db)){
+    if(!CreatePresetsTableIfNotExist(db)){
+        cout << "error creating table" << endl;
         return 0;
     }
 
