@@ -16,7 +16,6 @@ using json = nlohmann::json;
 void printJSValue(JSContextRef ctx, JSValueRef value);
 
 void PrintJSObject(JSContextRef ctx, JSObjectRef object);
-int CreateTasksTableIfNotExist(sqlite3 *db);
 int CreatePresetsTableIfNotExist(sqlite3 *db);
 int GetMostRecentTaskId();
 void to_json(json &j, const Task &task);
@@ -187,7 +186,7 @@ JSValue MyApp::SaveTask(const ultralight::JSObject &thisObject, const ultralight
     ///
 
     cout << "Called: SaveTask" << endl;
-
+    cout << args.data() << endl;
     if (args.size() != 1) {
         return 0;
     }
@@ -340,7 +339,7 @@ JSValue MyApp::DeleteTaskById(const ultralight::JSObject &thisObject, const ultr
 }
 
 JSValue MyApp::UpdateTask(const ultralight::JSObject &thisObject, const ultralight::JSArgs &args) {
-    cout << "Called: DeleteTasksById" << endl;
+    cout << "Called: UpdateTasksById" << endl;
 
     if (args.size() != 1) {
         return 0;
@@ -349,12 +348,17 @@ JSValue MyApp::UpdateTask(const ultralight::JSObject &thisObject, const ultralig
     // parse values
     ultralight::JSObject ultraObject = args[0];
     cout << "values:" << endl;
-    int id = stoi(GetValueOfProperty(ultraObject.context(), ultraObject, "id"));
+    string idString = GetValueOfProperty(ultraObject.context(), ultraObject, "id");
+    cout << idString << endl;
+    int id = stoi(idString);
+    cout << "stoi end" << endl;
     string taskName = GetValueOfProperty(ultraObject.context(), ultraObject, "taskName");
     string date = GetValueOfProperty(ultraObject.context(), ultraObject, "date");
     string startTime = GetValueOfProperty(ultraObject.context(), ultraObject, "startTime");
     string endTime = GetValueOfProperty(ultraObject.context(), ultraObject, "endTime");
     string comment = GetValueOfProperty(ultraObject.context(), ultraObject, "comment");
+
+    cout << "values end" << endl;
 
     sqlite3 *db;
     int rc = sqlite3_open("TimeTracker.db", &db);
@@ -828,7 +832,7 @@ string GetValueOfProperty(JSContextRef ctx, JSObjectRef object, const char *name
     return result;
 }
 
-int CreateTasksTableIfNotExist(sqlite3 *db){
+int MyApp::CreateTasksTableIfNotExist(sqlite3 *db){
 
     const char *createDBSql = "CREATE TABLE IF NOT EXISTS tasks(id INTEGER PRIMARY KEY AUTOINCREMENT, taskName TEXT, date TEXT, startTime TEXT, endTime TEXT, comment TEXT)";
 

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <AppCore/AppCore.h>
+#include "libraries/sqlite/sqlite3.h"
 
 using namespace ultralight;
 
@@ -30,6 +31,8 @@ public:
     JSValue DeletePreset(const JSObject &thisObject, const JSArgs &args);
 
     void CppConsoleLog(const JSObject &thisObject, const JSArgs &args);
+
+    int CreateTasksTableIfNotExist(sqlite3 *db);
 
     // Start the run loop.
     virtual void Run();
