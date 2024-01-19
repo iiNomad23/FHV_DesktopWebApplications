@@ -9,13 +9,15 @@
 using namespace std;
 
 struct Task {
+    int id;
     string taskName;
     string date;
     string startTime;
     string endTime;
     string comment;
 
-    Task(string taskName, string date, string startTime, string endTime, string comment){
+    Task(int id, string taskName, string date, string startTime, string endTime, string comment){
+        this->id = id;
         this->taskName = std::move(taskName);
         this->date = std::move(date);
         this->startTime = std::move(startTime);

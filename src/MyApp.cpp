@@ -306,7 +306,7 @@ JSValue MyApp::GetTasksByDate(const ultralight::JSObject &thisObject, const ultr
         vector<Task> tasks;
         // Execute the query and process the results
         while (sqlite3_step(stmt) == SQLITE_ROW) {
-            //int id = sqlite3_column_int(stmt, 0);
+            int id = sqlite3_column_int(stmt, 0);
             const char *name = reinterpret_cast<const char *>(sqlite3_column_text(stmt, 1));
             const char *date = reinterpret_cast<const char *>(sqlite3_column_text(stmt, 2));
             const char *startTime = reinterpret_cast<const char *>(sqlite3_column_text(stmt, 3));
@@ -314,7 +314,7 @@ JSValue MyApp::GetTasksByDate(const ultralight::JSObject &thisObject, const ultr
             const char *comment = reinterpret_cast<const char *>(sqlite3_column_text(stmt, 5));
 
             std::string str(name);
-            tasks.emplace_back(name, date, startTime, endTime, comment);
+            tasks.emplace_back(id, name, date, startTime, endTime, comment);
         }
 
         json result;
