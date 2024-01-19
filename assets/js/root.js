@@ -10,26 +10,22 @@ window.onload = () => {
 
     setEvents();
 
-    let tasksJSON = CppAPI.getTasksByDate(todayDate);
-    insertTasksIntoTable(tasksJSON);
+    let tasks = CppAPI.getTasksByDate(todayDate);
+    insertTasksIntoTable(tasks);
 }
 
-function insertTasksIntoTable(tasksJSON = '[]') {
-    // for testing purposes
-    document.getElementById("test-area").textContent = tasksJSON;
-    // /
-
+function insertTasksIntoTable(tasks = []) {
     let tasksTableBody = document
         .getElementById("tasks-table")
         .getElementsByTagName("tbody");
 
-    let tasks = JSON.parse(tasksJSON);
     for (let i = 0; i < tasks.length; i++) {
         let task = tasks[i];
         if (task == null) {
             continue;
         }
 
+        CppAPI.consoleLog(task.id);
         tasksTableBody[0].innerHTML += `<tr id="${"row_" + task.id}" class="hover">
                             <td></td>
                             <td>${task.taskName}</td>
@@ -40,9 +36,12 @@ function insertTasksIntoTable(tasksJSON = '[]') {
 
         document.getElementById("edit_" + task.id).addEventListener("click", function (e) {
             let taskId = e.currentTarget.getAttribute('data-taskId');
-            // if (CppAPI.updateTask(taskId)) {
-            //
-            // }
+            let task = CppAPI.getTasksById(taskId);
+            if (Object.keys(task).length === 0) {
+                return; // :(
+            }
+
+            openModal();
         });
         document.getElementById("delete_" + task.id).addEventListener("click", function (e) {
             let taskId = e.currentTarget.getAttribute('data-taskId');
@@ -126,10 +125,21 @@ function clearTaskModal(clearValues = true) {
     document.getElementById("create_task_modal").classList.add("hidden");
 }
 
-function openModal() {
+function openModal(task) {
     let createTaskModalEl = document.getElementById("create_task_modal");
     if (createTaskModalEl == null) {
         return; // :(
+    }
+
+    if (task != null) {
+        createTaskModalEl.getElementsByTagName("h3")[0] = "Edit Task";
+        createTaskModalEl.getElementById("task-name-input").value = task.taskName;
+        createTaskModalEl.getElementById("task-date-input").value = task.date;
+        createTaskModalEl.getElementById("task-start-input").value = convertMinutesIntoTimeFormat(task.startTime);
+        createTaskModalEl.getElementById("task-end-input").value = convertMinutesIntoTimeFormat(task.endTime);
+        createTaskModalEl.getElementById("task-comment-textarea").value = task.comment;
+    } else {
+        createTaskModalEl.getElementsByTagName("h3")[0] = "Create Task";
     }
 
     createTaskModalEl.classList.remove("hidden");
@@ -207,16 +217,22 @@ function setEvents() {
             return;
         }
 
-        let success = CppAPI.saveTask({
+        let task = {
             taskName: taskName,
             date: date,
             startTime: startTime,
             endTime: endTime,
             comment: comment
-        });
+        };
 
-        if (success) {
+        let taskId = CppAPI.saveTask(task);
+        CppAPI.consoleLog(taskId);
+
+        if (taskId > 0) {
             closeModal();
+
+            task["id"] = taskId;
+            insertTasksIntoTable([task]);
         } else {
             console.warn("[root] Error at saving task!");
         }
@@ -229,8 +245,8 @@ function setEvents() {
 
     // for testing purposes
     document.getElementById("test-button").addEventListener("click", function () {
-        let tasksJSON = CppAPI.getTasksByDate("12.07.2020");
-        insertTasksIntoTable(tasksJSON);
+        let tasks = CppAPI.getTasksByDate("12.07.2020");
+        insertTasksIntoTable(tasks);
     });
 }
 

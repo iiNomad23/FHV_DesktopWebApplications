@@ -9,31 +9,50 @@ class CppAPI {
 
     static getTasksByDate(todayDate = new Date()) {
         try {
-            return GetTasksByDate({
+            let jsonStr = GetTasksByDate({
                 date: todayDate,
             });
+
+            return JSON.parse(jsonStr);
         } catch (e) {
             console.warn("[CppAPI] ultralight binding error - function 'GetTasksByDate'");
         }
 
-        return '[]';
+        return [];
+    }
+
+    static getTasksById(taskId) {
+        if (taskId == null) {
+            return {};
+        }
+
+        taskId = parseInt(taskId);
+        if (isNaN(taskId) || taskId < 1) {
+            return {};
+        }
+
+        try {
+            let jsonStr = GetTasksById(taskId);
+            return JSON.parse(jsonStr);
+        } catch (e) {
+            console.warn("[CppAPI] ultralight binding error - function 'GetTasksById'");
+        }
+
+        return {};
     }
 
     static saveTask(task) {
         if (task == null) {
-            return false;
+            return 0;
         }
 
         try {
-            let statusCode = SaveTask(task);
-            if (statusCode) {
-                return true;
-            }
+            return SaveTask(task);
         } catch (e) {
             console.warn("[CppAPI] ultralight binding error - function 'SaveTask'");
         }
 
-        return false;
+        return 0;
     }
 
     static deleteTaskById(taskId) {
@@ -42,7 +61,7 @@ class CppAPI {
         }
 
         taskId = parseInt(taskId);
-        if (isNaN(taskId)) {
+        if (isNaN(taskId) || taskId < 1) {
             return false;
         }
 
