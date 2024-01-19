@@ -21,7 +21,11 @@ public:
 
     JSValue UpdateTask(const JSObject &thisObject, const JSArgs &args);
 
-    void CppConsoleLog(const ultralight::JSObject &thisObject, const ultralight::JSArgs &args);
+    JSValue SavePreset(const JSObject &thisObject, const JSArgs &args);
+
+    JSValue GetAllPresets(const JSObject &thisObject, const JSArgs &args);
+
+    void CppConsoleLog(const JSObject &thisObject, const JSArgs &args);
 
     // Start the run loop.
     virtual void Run();

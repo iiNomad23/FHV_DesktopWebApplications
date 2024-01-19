@@ -149,6 +149,8 @@ void MyApp::OnDOMReady(ultralight::View *caller,
     global["CppConsoleLog"] = BindJSCallback(&MyApp::CppConsoleLog);
     global["DeleteTaskById"] = BindJSCallbackWithRetval(&MyApp::DeleteTaskById);
     global["UpdateTask"] = BindJSCallbackWithRetval(&MyApp::UpdateTask);
+    global["SavePreset"] = BindJSCallbackWithRetval(&MyApp::SavePreset);
+    global["GetAllPresets"] = BindJSCallbackWithRetval(&MyApp::GetAllPresets);
 }
 
 void MyApp::OnChangeCursor(ultralight::View *caller,
@@ -494,6 +496,146 @@ JSValue MyApp::GetTasksByDate(const ultralight::JSObject &thisObject, const ultr
     cout << "end" << endl;
     return resultString.c_str();
 }
+
+JSValue MyApp::SavePreset(const ultralight::JSObject &thisObject, const ultralight::JSArgs &args) {
+    ///
+    /// Return our message to JavaScript as a JSValue.
+    ///
+
+    cout << "Called: SavePreset" << endl;
+
+    if (args.size() != 1) {
+        return 0;
+    }
+
+    // parse values
+    ultralight::String presetUltralightString = args[0];
+    string preset = presetUltralightString.utf8().data();
+
+    // write to db
+    sqlite3 *db;
+    int rc = sqlite3_open("TimeTracker.db", &db);
+
+    if (rc) {
+        fprintf(stderr, "Can't open database: %s\n", sqlite3_errmsg(db));
+        return (0);
+    }
+
+    const char *createDBSql = "CREATE TABLE IF NOT EXISTS presets(name TEXT PRIMARY KEY)";
+
+    sqlite3_stmt *createDBStatement;
+    rc = sqlite3_prepare_v2(db, createDBSql, -1, &createDBStatement, nullptr);
+
+    if (rc != SQLITE_OK) {
+        cout << "error preparing sql statement" << endl;
+        return 0;
+    }
+
+    rc = sqlite3_step(createDBStatement);
+    if (rc != SQLITE_DONE) {
+        cout << "error executing sql statement" << endl;
+        return 0;
+    }
+
+    sqlite3_finalize(createDBStatement);
+
+    const char *sql = "INSERT INTO presets(name) VALUES (?)";
+
+    sqlite3_stmt *stmt;
+    rc = sqlite3_prepare_v2(db, sql, -1, &stmt, nullptr);
+
+    if (rc != SQLITE_OK) {
+        cout << "error preparing sql statement" << endl;
+        return 0;
+    }
+
+    Encdec encrypter;
+    sqlite3_bind_text(stmt, 1, encrypter.encrypt(preset).c_str(), -1, SQLITE_TRANSIENT);
+
+    rc = sqlite3_step(stmt);
+    if (rc != SQLITE_DONE) {
+        cout << "error executing sql statement" << endl;
+        return 0;
+    }
+
+    sqlite3_finalize(stmt);
+    sqlite3_close(db);
+
+    fprintf(stderr, "successfully saved to database\n");
+
+    return 1;
+}
+
+JSValue MyApp::GetAllPresets(const ultralight::JSObject &thisObject, const ultralight::JSArgs &args) {
+    cout << "Called: GetAllPresets" << endl;
+
+    sqlite3 *db;
+    int rc = sqlite3_open("TimeTracker.db", &db);
+    if (rc) {
+        fprintf(stderr, "Can't open database: %s\n", sqlite3_errmsg(db));
+        return (0);
+    }
+
+    const char *createDBSql = "CREATE TABLE IF NOT EXISTS presets(name TEXT PRIMARY KEY)";
+
+    sqlite3_stmt *createDBStatement;
+    rc = sqlite3_prepare_v2(db, createDBSql, -1, &createDBStatement, nullptr);
+
+    if (rc != SQLITE_OK) {
+        cout << "error preparing sql statement" << endl;
+        return 0;
+    }
+
+    rc = sqlite3_step(createDBStatement);
+    if (rc != SQLITE_DONE) {
+        cout << "error executing sql statement" << endl;
+        return 0;
+    }
+
+    sqlite3_finalize(createDBStatement);
+
+    const char *sql = "SELECT * FROM presets";
+
+    sqlite3_stmt *stmt;
+    rc = sqlite3_prepare_v2(db, sql, -1, &stmt, nullptr);
+
+    if (rc != SQLITE_OK) {
+        cout << "error preparing sql statement" << endl;
+        return 0;
+    }
+
+    Encdec encrypter;
+
+    vector<std::string> presets;
+    // Execute the query and process the results
+    while (sqlite3_step(stmt) == SQLITE_ROW) {
+        const char *name = reinterpret_cast<const char *>(sqlite3_column_text(stmt, 0));
+        presets.emplace_back(name);
+    }
+
+
+
+    json result;
+    for (const auto &preset: presets) {
+        cout << preset << endl;
+
+        cout << "------------------" << endl;
+
+        result.push_back(
+                json{
+                        {"preset", encrypter.decrypt(preset)},
+                }
+        );
+    }
+
+    sqlite3_finalize(stmt);
+    sqlite3_close(db);
+
+    string resultString = result.dump();
+    return resultString.c_str();
+
+}
+
 
 void MyApp::CppConsoleLog(const ultralight::JSObject &thisObject, const ultralight::JSArgs &args) {
     cout << "Called: CppConsoleLog" << endl;
