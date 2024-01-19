@@ -236,12 +236,28 @@ JSValue MyApp::SaveTask(const ultralight::JSObject &thisObject, const ultralight
     }
 
     sqlite3_finalize(stmt);
+
+    int taskId;
+    const char *getCurrentTaskId = "SELECT * FROM table ORDER BY id DESC LIMIT 1";
+
+    rc = sqlite3_prepare_v2(db, getCurrentTaskId, -1, &stmt, nullptr);
+
+    if (rc != SQLITE_OK) {
+        cout << "error preparing sql statement" << endl;
+        return 0;
+    }
+
+    while (sqlite3_step(stmt) == SQLITE_ROW) {
+        taskId = sqlite3_column_int(stmt, 0);
+    }
+    sqlite3_finalize(stmt);
     sqlite3_close(db);
 
     fprintf(stderr, "successfully saved to database\n");
 
-    return 1;
+    return taskId;
 }
+
 JSValue MyApp::DeleteTaskById(const ultralight::JSObject &thisObject, const ultralight::JSArgs &args) {
     cout << "Called: DeleteTasksById" << endl;
 
