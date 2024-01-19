@@ -180,180 +180,186 @@ JSValue MyApp::SaveTask(const ultralight::JSObject &thisObject, const ultralight
 
     cout << "Called: SaveTask" << endl;
 
-    if (args.size() == 1) {
-        // parse values
-        ultralight::JSObject ultraObject = args[0];
-        cout << "values:" << endl;
-        string taskName = GetValueOfProperty(ultraObject.context(), ultraObject, "taskName");
-        string date = GetValueOfProperty(ultraObject.context(), ultraObject, "date");
-        string startTime = GetValueOfProperty(ultraObject.context(), ultraObject, "startTime");
-        string endTime = GetValueOfProperty(ultraObject.context(), ultraObject, "endTime");
-        string comment = GetValueOfProperty(ultraObject.context(), ultraObject, "comment");
-
-        string strings[] = {taskName, date, startTime, endTime, comment};
-        for (const std::string &str: strings) {
-            cout << str << endl;
-        }
-
-        // write to db
-        sqlite3 *db;
-        int rc = sqlite3_open("TimeTracker.db", &db);
-
-        if (rc) {
-            fprintf(stderr, "Can't open database: %s\n", sqlite3_errmsg(db));
-            return (0);
-        }
-
-        const char *createDBSql = "CREATE TABLE IF NOT EXISTS tasks(id INTEGER PRIMARY KEY AUTOINCREMENT, taskName TEXT, date TEXT, startTime TEXT, endTime TEXT, comment TEXT)";
-
-        sqlite3_stmt *createDBStatement;
-        rc = sqlite3_prepare_v2(db, createDBSql, -1, &createDBStatement, nullptr);
-
-        if (rc != SQLITE_OK) {
-            cout << "error preparing sql statement" << endl;
-            return 0;
-        }
-
-        rc = sqlite3_step(createDBStatement);
-        if (rc != SQLITE_DONE) {
-            cout << "error executing sql statement" << endl;
-            return 0;
-        }
-
-        sqlite3_finalize(createDBStatement);
-
-        const char *sql = "INSERT INTO tasks(taskName, date, startTime, endTime, comment) VALUES (?, ?, ?, ?, ?)";
-
-        sqlite3_stmt *stmt;
-        rc = sqlite3_prepare_v2(db, sql, -1, &stmt, nullptr);
-
-        if (rc != SQLITE_OK) {
-            cout << "error preparing sql statement" << endl;
-            return 0;
-        }
-
-        Encdec encrypter;
-        sqlite3_bind_text(stmt, 1, encrypter.encrypt(taskName).c_str(), -1, SQLITE_TRANSIENT);
-        sqlite3_bind_text(stmt, 2, date.c_str(), -1, SQLITE_TRANSIENT);
-        sqlite3_bind_text(stmt, 3, startTime.c_str(), -1, SQLITE_TRANSIENT);
-        sqlite3_bind_text(stmt, 4, endTime.c_str(), -1, SQLITE_TRANSIENT);
-        sqlite3_bind_text(stmt, 5, encrypter.encrypt(comment).c_str(), -1, SQLITE_TRANSIENT);
-
-        rc = sqlite3_step(stmt);
-        if (rc != SQLITE_DONE) {
-            cout << "error executing sql statement" << endl;
-            return 0;
-        }
-
-        sqlite3_finalize(stmt);
-        sqlite3_close(db);
-
-
-        fprintf(stderr, "successfully saved to database\n");
+    if (args.size() != 1) {
+        return 0;
     }
+
+    // parse values
+    ultralight::JSObject ultraObject = args[0];
+    cout << "values:" << endl;
+    string taskName = GetValueOfProperty(ultraObject.context(), ultraObject, "taskName");
+    string date = GetValueOfProperty(ultraObject.context(), ultraObject, "date");
+    string startTime = GetValueOfProperty(ultraObject.context(), ultraObject, "startTime");
+    string endTime = GetValueOfProperty(ultraObject.context(), ultraObject, "endTime");
+    string comment = GetValueOfProperty(ultraObject.context(), ultraObject, "comment");
+
+    string strings[] = {taskName, date, startTime, endTime, comment};
+    for (const std::string &str: strings) {
+        cout << str << endl;
+    }
+
+    // write to db
+    sqlite3 *db;
+    int rc = sqlite3_open("TimeTracker.db", &db);
+
+    if (rc) {
+        fprintf(stderr, "Can't open database: %s\n", sqlite3_errmsg(db));
+        return (0);
+    }
+
+    const char *createDBSql = "CREATE TABLE IF NOT EXISTS tasks(id INTEGER PRIMARY KEY AUTOINCREMENT, taskName TEXT, date TEXT, startTime TEXT, endTime TEXT, comment TEXT)";
+
+    sqlite3_stmt *createDBStatement;
+    rc = sqlite3_prepare_v2(db, createDBSql, -1, &createDBStatement, nullptr);
+
+    if (rc != SQLITE_OK) {
+        cout << "error preparing sql statement" << endl;
+        return 0;
+    }
+
+    rc = sqlite3_step(createDBStatement);
+    if (rc != SQLITE_DONE) {
+        cout << "error executing sql statement" << endl;
+        return 0;
+    }
+
+    sqlite3_finalize(createDBStatement);
+
+    const char *sql = "INSERT INTO tasks(taskName, date, startTime, endTime, comment) VALUES (?, ?, ?, ?, ?)";
+
+    sqlite3_stmt *stmt;
+    rc = sqlite3_prepare_v2(db, sql, -1, &stmt, nullptr);
+
+    if (rc != SQLITE_OK) {
+        cout << "error preparing sql statement" << endl;
+        return 0;
+    }
+
+    Encdec encrypter;
+    sqlite3_bind_text(stmt, 1, encrypter.encrypt(taskName).c_str(), -1, SQLITE_TRANSIENT);
+    sqlite3_bind_text(stmt, 2, date.c_str(), -1, SQLITE_TRANSIENT);
+    sqlite3_bind_text(stmt, 3, startTime.c_str(), -1, SQLITE_TRANSIENT);
+    sqlite3_bind_text(stmt, 4, endTime.c_str(), -1, SQLITE_TRANSIENT);
+    sqlite3_bind_text(stmt, 5, encrypter.encrypt(comment).c_str(), -1, SQLITE_TRANSIENT);
+
+    rc = sqlite3_step(stmt);
+    if (rc != SQLITE_DONE) {
+        cout << "error executing sql statement" << endl;
+        return 0;
+    }
+
+    sqlite3_finalize(stmt);
+    sqlite3_close(db);
+
+    fprintf(stderr, "successfully saved to database\n");
 
     return JSValue("Successfully saved Task");
 }
-//JSValue MyApp::DeleteTasksById(const ultralight::JSObject &thisObject, const ultralight::JSArgs &args) {
-//
-//
-//}
+JSValue MyApp::DeleteTasksById(const ultralight::JSObject &thisObject, const ultralight::JSArgs &args) {
+    cout << "Called: DeleteTasksById" << endl;
+
+    if (args.size() != 1) {
+        return 0;
+    }
+
+    int taskId = args[0];
+}
 
 
 JSValue MyApp::GetTasksByDate(const ultralight::JSObject &thisObject, const ultralight::JSArgs &args) {
     cout << "Called: GetTasksByDate" << endl;
 
-    if (args.size() == 1) {
-        // parse values
-        ultralight::JSObject ultraObject = args[0];
-        cout << "values:" << endl;
-        string date = GetValueOfProperty(ultraObject.context(), ultraObject, "date");
-        cout << date << endl;
-
-        sqlite3 *db;
-        int rc = sqlite3_open("TimeTracker.db", &db);
-        if (rc) {
-            fprintf(stderr, "Can't open database: %s\n", sqlite3_errmsg(db));
-            return (0);
-        }
-
-        const char *createDBSql = "CREATE TABLE IF NOT EXISTS tasks(id INTEGER PRIMARY KEY AUTOINCREMENT, taskName TEXT, date TEXT, startTime TEXT, endTime TEXT, comment TEXT)";
-
-        sqlite3_stmt *createDBStatement;
-        rc = sqlite3_prepare_v2(db, createDBSql, -1, &createDBStatement, nullptr);
-
-        if (rc != SQLITE_OK) {
-            cout << "error preparing sql statement" << endl;
-            return 0;
-        }
-
-        rc = sqlite3_step(createDBStatement);
-        if (rc != SQLITE_DONE) {
-            cout << "error executing sql statement" << endl;
-            return 0;
-        }
-
-        sqlite3_finalize(createDBStatement);
-
-        const char *sql = "SELECT * FROM tasks WHERE date = ?";
-
-        sqlite3_stmt *stmt;
-        rc = sqlite3_prepare_v2(db, sql, -1, &stmt, nullptr);
-
-        if (rc != SQLITE_OK) {
-            cout << "error preparing sql statement" << endl;
-            return 0;
-        }
-
-        Encdec encrypter;
-        sqlite3_bind_text(stmt, 1, date.c_str(), -1, SQLITE_TRANSIENT);
-
-        vector<Task> tasks;
-        // Execute the query and process the results
-        while (sqlite3_step(stmt) == SQLITE_ROW) {
-            int id = sqlite3_column_int(stmt, 0);
-            const char *name = reinterpret_cast<const char *>(sqlite3_column_text(stmt, 1));
-            const char *date = reinterpret_cast<const char *>(sqlite3_column_text(stmt, 2));
-            const char *startTime = reinterpret_cast<const char *>(sqlite3_column_text(stmt, 3));
-            const char *endTime = reinterpret_cast<const char *>(sqlite3_column_text(stmt, 4));
-            const char *comment = reinterpret_cast<const char *>(sqlite3_column_text(stmt, 5));
-
-            std::string str(name);
-            tasks.emplace_back(id, name, date, startTime, endTime, comment);
-        }
-
-        json result;
-        for (const auto &task: tasks) {
-            cout << task.taskName << endl;
-            cout << task.date << endl;
-            cout << task.startTime << endl;
-            cout << task.endTime << endl;
-            cout << task.comment << endl;
-            cout << "------------------" << endl;
-
-            result.push_back(
-                    json{
-                            {"id", task.id},
-                            {"taskName",  encrypter.decrypt(task.taskName)},
-                            {"date",      task.date},
-                            {"startTime", task.startTime},
-                            {"endTime",   task.endTime},
-                            {"comment",   encrypter.decrypt(task.comment)}
-                    }
-            );
-        }
-
-        cout << "done" << endl;
-        sqlite3_finalize(stmt);
-        sqlite3_close(db);
-
-        cout << result << endl;
-        string resultString = result.dump();
-        cout << "end" << endl;
-        return resultString.c_str();
+    if (args.size() != 1) {
+        return 0;
     }
 
-    return 0;
+    // parse values
+    ultralight::JSObject ultraObject = args[0];
+    cout << "values:" << endl;
+    string date = GetValueOfProperty(ultraObject.context(), ultraObject, "date");
+    cout << date << endl;
+
+    sqlite3 *db;
+    int rc = sqlite3_open("TimeTracker.db", &db);
+    if (rc) {
+        fprintf(stderr, "Can't open database: %s\n", sqlite3_errmsg(db));
+        return (0);
+    }
+
+    const char *createDBSql = "CREATE TABLE IF NOT EXISTS tasks(id INTEGER PRIMARY KEY AUTOINCREMENT, taskName TEXT, date TEXT, startTime TEXT, endTime TEXT, comment TEXT)";
+
+    sqlite3_stmt *createDBStatement;
+    rc = sqlite3_prepare_v2(db, createDBSql, -1, &createDBStatement, nullptr);
+
+    if (rc != SQLITE_OK) {
+        cout << "error preparing sql statement" << endl;
+        return 0;
+    }
+
+    rc = sqlite3_step(createDBStatement);
+    if (rc != SQLITE_DONE) {
+        cout << "error executing sql statement" << endl;
+        return 0;
+    }
+
+    sqlite3_finalize(createDBStatement);
+
+    const char *sql = "SELECT * FROM tasks WHERE date = ?";
+
+    sqlite3_stmt *stmt;
+    rc = sqlite3_prepare_v2(db, sql, -1, &stmt, nullptr);
+
+    if (rc != SQLITE_OK) {
+        cout << "error preparing sql statement" << endl;
+        return 0;
+    }
+
+    Encdec encrypter;
+    sqlite3_bind_text(stmt, 1, date.c_str(), -1, SQLITE_TRANSIENT);
+
+    vector<Task> tasks;
+    // Execute the query and process the results
+    while (sqlite3_step(stmt) == SQLITE_ROW) {
+        int id = sqlite3_column_int(stmt, 0);
+        const char *name = reinterpret_cast<const char *>(sqlite3_column_text(stmt, 1));
+        const char *date = reinterpret_cast<const char *>(sqlite3_column_text(stmt, 2));
+        const char *startTime = reinterpret_cast<const char *>(sqlite3_column_text(stmt, 3));
+        const char *endTime = reinterpret_cast<const char *>(sqlite3_column_text(stmt, 4));
+        const char *comment = reinterpret_cast<const char *>(sqlite3_column_text(stmt, 5));
+
+        std::string str(name);
+        tasks.emplace_back(id, name, date, startTime, endTime, comment);
+    }
+
+    json result;
+    for (const auto &task: tasks) {
+        cout << task.taskName << endl;
+        cout << task.date << endl;
+        cout << task.startTime << endl;
+        cout << task.endTime << endl;
+        cout << task.comment << endl;
+        cout << "------------------" << endl;
+
+        result.push_back(
+                json{
+                        {"id", task.id},
+                        {"taskName",  encrypter.decrypt(task.taskName)},
+                        {"date",      task.date},
+                        {"startTime", task.startTime},
+                        {"endTime",   task.endTime},
+                        {"comment",   encrypter.decrypt(task.comment)}
+                }
+        );
+    }
+
+    cout << "done" << endl;
+    sqlite3_finalize(stmt);
+    sqlite3_close(db);
+
+    cout << result << endl;
+    string resultString = result.dump();
+    cout << "end" << endl;
+    return resultString.c_str();
 }
 
 void MyApp::CppConsoleLog(const ultralight::JSObject &thisObject, const ultralight::JSArgs &args) {
