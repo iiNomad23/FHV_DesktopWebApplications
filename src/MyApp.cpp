@@ -148,6 +148,7 @@ void MyApp::OnDOMReady(ultralight::View *caller,
     global["GetTasksByDate"] = BindJSCallbackWithRetval(&MyApp::GetTasksByDate);
     global["CppConsoleLog"] = BindJSCallback(&MyApp::CppConsoleLog);
     global["DeleteTaskById"] = BindJSCallbackWithRetval(&MyApp::DeleteTaskById);
+    global["UpdateTask"] = BindJSCallbackWithRetval(&MyApp::UpdateTask);
 }
 
 void MyApp::OnChangeCursor(ultralight::View *caller,
@@ -254,7 +255,7 @@ JSValue MyApp::SaveTask(const ultralight::JSObject &thisObject, const ultralight
 
     fprintf(stderr, "successfully saved to database\n");
 
-    return JSValue("Successfully saved Task");
+    return 1;
 }
 JSValue MyApp::DeleteTaskById(const ultralight::JSObject &thisObject, const ultralight::JSArgs &args) {
     cout << "Called: DeleteTasksById" << endl;
@@ -312,7 +313,88 @@ JSValue MyApp::DeleteTaskById(const ultralight::JSObject &thisObject, const ultr
 
     fprintf(stderr, "successfully deleted task\n");
 
-    return JSValue("Successfully deleted Task");
+    return 1;
+
+}
+
+JSValue MyApp::UpdateTask(const ultralight::JSObject &thisObject, const ultralight::JSArgs &args) {
+    cout << "Called: DeleteTasksById" << endl;
+
+    if (args.size() != 1) {
+        return 0;
+    }
+
+    // parse values
+    ultralight::JSObject ultraObject = args[0];
+    cout << "values:" << endl;
+    int id = stoi(GetValueOfProperty(ultraObject.context(), ultraObject, "id"));
+    string taskName = GetValueOfProperty(ultraObject.context(), ultraObject, "taskName");
+    string date = GetValueOfProperty(ultraObject.context(), ultraObject, "date");
+    string startTime = GetValueOfProperty(ultraObject.context(), ultraObject, "startTime");
+    string endTime = GetValueOfProperty(ultraObject.context(), ultraObject, "endTime");
+    string comment = GetValueOfProperty(ultraObject.context(), ultraObject, "comment");
+
+    sqlite3 *db;
+    int rc = sqlite3_open("TimeTracker.db", &db);
+    if (rc) {
+        fprintf(stderr, "Can't open database: %s\n", sqlite3_errmsg(db));
+        return (0);
+    }
+
+    const char *createDBSql = "CREATE TABLE IF NOT EXISTS tasks(id INTEGER PRIMARY KEY AUTOINCREMENT, taskName TEXT, date TEXT, startTime TEXT, endTime TEXT, comment TEXT)";
+
+    sqlite3_stmt *createDBStatement;
+    rc = sqlite3_prepare_v2(db, createDBSql, -1, &createDBStatement, nullptr);
+
+    if (rc != SQLITE_OK) {
+        cout << "error preparing sql statement" << endl;
+        return 0;
+    }
+
+    rc = sqlite3_step(createDBStatement);
+    if (rc != SQLITE_DONE) {
+        cout << "error executing sql statement" << endl;
+        return 0;
+    }
+
+    sqlite3_finalize(createDBStatement);
+
+    const char *sql = "UPDATE tasks "
+                      "SET taskName = ?,"
+                      "date = ?"
+                      "startTime = ?"
+                      "endTime = ?"
+                      "comment = ?"
+                      "WHERE id = ?";
+
+    sqlite3_stmt *stmt;
+    rc = sqlite3_prepare_v2(db, sql, -1, &stmt, nullptr);
+
+    if (rc != SQLITE_OK) {
+        cout << "error preparing sql statement" << endl;
+        return 0;
+    }
+
+    Encdec encrypter;
+    sqlite3_bind_text(stmt, 1, encrypter.encrypt(taskName).c_str(), -1, SQLITE_TRANSIENT);
+    sqlite3_bind_text(stmt, 2, date.c_str(), -1, SQLITE_TRANSIENT);
+    sqlite3_bind_text(stmt, 3, startTime.c_str(), -1, SQLITE_TRANSIENT);
+    sqlite3_bind_text(stmt, 4, endTime.c_str(), -1, SQLITE_TRANSIENT);
+    sqlite3_bind_text(stmt, 5, encrypter.encrypt(comment).c_str(), -1, SQLITE_TRANSIENT);
+    sqlite3_bind_int(stmt, 6, id);
+
+    rc = sqlite3_step(stmt);
+    if (rc != SQLITE_DONE) {
+        cout << "error executing sql statement" << endl;
+        return 0;
+    }
+
+    sqlite3_finalize(stmt);
+    sqlite3_close(db);
+
+    fprintf(stderr, "successfully deleted task\n");
+
+    return 1;
 
 }
 
