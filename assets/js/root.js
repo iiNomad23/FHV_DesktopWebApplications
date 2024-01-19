@@ -30,8 +30,7 @@ function insertTasksIntoTable(tasksJSON = '[]') {
             continue;
         }
 
-        let rowId = i + 1;
-        tasksTableBody[0].innerHTML += `<tr class="hover">
+        tasksTableBody[0].innerHTML += `<tr id="${"row_" + task.id}" class="hover">
                             <td></td>
                             <td>${task.taskName}</td>
                             <td>${convertMinutesIntoTimeFormat(task.startTime)}</td>
@@ -49,16 +48,12 @@ function insertTasksIntoTable(tasksJSON = '[]') {
             let taskId = e.currentTarget.getAttribute('data-taskId');
 
             if (CppAPI.deleteTaskById(taskId)) {
-                let parentElement = e.currentTarget.parentNode; // div
-
-                // continue moving up the DOM tree until a 'tr' element is found
-                while (parentElement && parentElement.tagName !== 'TR') {
-                    parentElement = parentElement.parentNode;
+                let rowEl = document.getElementById("row_" + taskId);
+                if (rowEl == null) {
+                    return; // :(
                 }
 
-                if (parentElement && parentElement.tagName === 'TR') {
-                    parentElement.remove();
-                }
+                rowEl.remove();
             }
         });
     }
