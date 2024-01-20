@@ -507,9 +507,7 @@ JSValue MyApp::GetTasksByDate(const ultralight::JSObject &thisObject, const ultr
     cout << result << endl;
     string resultString = result.dump();
     cout << "end" << endl;
-    if(resultString.c_str() == NULL){
-        return 0;
-    }
+
     return resultString.c_str();
 }
 
