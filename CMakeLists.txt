@@ -20,6 +20,8 @@ set(APP_SOURCES
         "src/main.cpp"
         "src/Encdec.h"
         "src/Encdec.cpp"
+        "src/DatabaseHelper.cpp"
+        "src/DatabaseHelper.h"
         "src/libraries/sqlite/sqlite3.c"
         "src/libraries/sqlite/sqlite3.h"
         "src/libraries/sqlite/sqlite3ext.h"
