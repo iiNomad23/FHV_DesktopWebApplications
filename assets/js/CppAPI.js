@@ -93,4 +93,44 @@ class CppAPI {
 
         return false;
     }
+
+    static savePreset(preset) {
+        if (preset == null) {
+            return 0;
+        }
+
+        try {
+            return SavePreset(preset);
+        } catch (e) {
+            CppAPI.consoleLog("[CppAPI] ultralight binding error - function 'SavePreset'");
+        }
+
+        return 0;
+    }
+
+    static deletePreset(preset) {
+        if (preset == null) {
+            return 0;
+        }
+
+        try {
+            return DeletePreset(preset);
+        } catch (e) {
+            CppAPI.consoleLog("[CppAPI] ultralight binding error - function 'DeletePreset'");
+        }
+
+        return 0;
+    }
+
+    static getAllPresets(todayDate = new Date()) {
+        try {
+            let jsonStr = GetAllPresets()();
+
+            return JSON.parse(jsonStr);
+        } catch (e) {
+            CppAPI.consoleLog("[CppAPI] ultralight binding error - function 'getAllPresets'");
+        }
+
+        return [];
+    }
 }
