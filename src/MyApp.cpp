@@ -609,7 +609,6 @@ JSValue MyApp::SavePreset(const ultralight::JSObject &thisObject, const ultralig
     // write to db
     sqlite3 *db;
     int rc = sqlite3_open("TimeTracker.db", &db);
-    CreatePresetsTableIfNotExist(db);
     if (rc) {
         fprintf(stderr, "Can't open database: %s\n", sqlite3_errmsg(db));
         return (0);
@@ -860,7 +859,7 @@ int MyApp::CreateTasksTableIfNotExist(sqlite3 *db){
 
 int CreatePresetsTableIfNotExist(sqlite3 *db){
     cout << "Create Presets Table If Not Exist called" << endl;
-    const char *createDBSql = "CREATE TABLE IF NOT EXISTS tasks(id INTEGER PRIMARY KEY AUTOINCREMENT, taskName TEXT, date TEXT, startTime TEXT, endTime TEXT, comment TEXT)";
+    const char *createDBSql = "CREATE TABLE IF NOT EXISTS presets(name TEXT PRIMARY KEY)";
 
     sqlite3_stmt *createDBStatement;
     int rc = sqlite3_prepare_v2(db, createDBSql, -1, &createDBStatement, nullptr);
@@ -877,6 +876,6 @@ int CreatePresetsTableIfNotExist(sqlite3 *db){
     }
 
     sqlite3_finalize(createDBStatement);
-
+    cout << "Create Presets Table If Not Exist completed" << endl;
     return 1;
 }

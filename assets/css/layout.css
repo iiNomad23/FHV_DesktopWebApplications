@@ -383,6 +383,13 @@ input::-moz-placeholder, textarea::-moz-placeholder {
   /* 2 */
 }
 
+input:-ms-input-placeholder, textarea:-ms-input-placeholder {
+  opacity: 1;
+  /* 1 */
+  color: #9ca3af;
+  /* 2 */
+}
+
 input::placeholder,
 textarea::placeholder {
   opacity: 1;
@@ -888,6 +895,56 @@ html {
   --tw-backdrop-sepia:  ;
 }
 
+::-webkit-backdrop {
+  --tw-border-spacing-x: 0;
+  --tw-border-spacing-y: 0;
+  --tw-translate-x: 0;
+  --tw-translate-y: 0;
+  --tw-rotate: 0;
+  --tw-skew-x: 0;
+  --tw-skew-y: 0;
+  --tw-scale-x: 1;
+  --tw-scale-y: 1;
+  --tw-pan-x:  ;
+  --tw-pan-y:  ;
+  --tw-pinch-zoom:  ;
+  --tw-scroll-snap-strictness: proximity;
+  --tw-gradient-from-position:  ;
+  --tw-gradient-via-position:  ;
+  --tw-gradient-to-position:  ;
+  --tw-ordinal:  ;
+  --tw-slashed-zero:  ;
+  --tw-numeric-figure:  ;
+  --tw-numeric-spacing:  ;
+  --tw-numeric-fraction:  ;
+  --tw-ring-inset:  ;
+  --tw-ring-offset-width: 0px;
+  --tw-ring-offset-color: #fff;
+  --tw-ring-color: rgb(59 130 246 / 0.5);
+  --tw-ring-offset-shadow: 0 0 #0000;
+  --tw-ring-shadow: 0 0 #0000;
+  --tw-shadow: 0 0 #0000;
+  --tw-shadow-colored: 0 0 #0000;
+  --tw-blur:  ;
+  --tw-brightness:  ;
+  --tw-contrast:  ;
+  --tw-grayscale:  ;
+  --tw-hue-rotate:  ;
+  --tw-invert:  ;
+  --tw-saturate:  ;
+  --tw-sepia:  ;
+  --tw-drop-shadow:  ;
+  --tw-backdrop-blur:  ;
+  --tw-backdrop-brightness:  ;
+  --tw-backdrop-contrast:  ;
+  --tw-backdrop-grayscale:  ;
+  --tw-backdrop-hue-rotate:  ;
+  --tw-backdrop-invert:  ;
+  --tw-backdrop-opacity:  ;
+  --tw-backdrop-saturate:  ;
+  --tw-backdrop-sepia:  ;
+}
+
 ::backdrop {
   --tw-border-spacing-x: 0;
   --tw-border-spacing-y: 0;
@@ -1040,15 +1097,16 @@ html {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, -webkit-backdrop-filter;
+  transition-property: color, background-color, border-color, fill, stroke, opacity, box-shadow, transform, filter, -webkit-text-decoration-color, -webkit-backdrop-filter;
   transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter;
-  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter, -webkit-backdrop-filter;
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter, -webkit-text-decoration-color, -webkit-backdrop-filter;
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
   transition-timing-function: cubic-bezier(0, 0, 0.2, 1);
   transition-duration: 200ms;
   height: 1.25rem;
   font-size: 0.875rem;
   line-height: 1.25rem;
+  width: -webkit-fit-content;
   width: -moz-fit-content;
   width: fit-content;
   padding-left: 0.563rem;
@@ -1105,6 +1163,7 @@ html {
   display: flex;
   align-items: center;
   white-space: nowrap;
+  min-height: -webkit-min-content;
   min-height: -moz-min-content;
   min-height: min-content;
 }
@@ -1122,11 +1181,13 @@ html {
 
 @media (hover:hover) {
   .breadcrumbs > ul > li > a:hover, .breadcrumbs > ol > li > a:hover {
-    text-decoration-line: underline;
+    -webkit-text-decoration-line: underline;
+            text-decoration-line: underline;
   }
 
   .link-hover:hover {
-    text-decoration-line: underline;
+    -webkit-text-decoration-line: underline;
+            text-decoration-line: underline;
   }
 
   .checkbox-primary:hover {
@@ -1244,6 +1305,7 @@ html {
   cursor: pointer;
   -webkit-user-select: none;
      -moz-user-select: none;
+      -ms-user-select: none;
           user-select: none;
   flex-wrap: wrap;
   align-items: center;
@@ -1258,11 +1320,13 @@ html {
   line-height: 1em;
   gap: 0.5rem;
   font-weight: 600;
-  text-decoration-line: none;
+  -webkit-text-decoration-line: none;
+          text-decoration-line: none;
   transition-duration: 200ms;
   transition-timing-function: cubic-bezier(0, 0, 0.2, 1);
   border-width: var(--border-btn, 1px);
-  animation: button-pop var(--animation-btn, 0.25s) ease-out;
+  -webkit-animation: button-pop var(--animation-btn, 0.25s) ease-out;
+          animation: button-pop var(--animation-btn, 0.25s) ease-out;
   transition-property: color, background-color, border-color, opacity, box-shadow, transform;
   --tw-text-opacity: 1;
   color: var(--fallback-bc,oklch(var(--bc)/var(--tw-text-opacity)));
@@ -1381,7 +1445,8 @@ html {
 .carousel {
   display: inline-flex;
   overflow-x: scroll;
-  scroll-snap-type: x mandatory;
+  -ms-scroll-snap-type: x mandatory;
+      scroll-snap-type: x mandatory;
   scroll-behavior: smooth;
   -ms-overflow-style: none;
   scrollbar-width: none;
@@ -1390,7 +1455,8 @@ html {
 .carousel-vertical {
   flex-direction: column;
   overflow-y: scroll;
-  scroll-snap-type: y mandatory;
+  -ms-scroll-snap-type: y mandatory;
+      scroll-snap-type: y mandatory;
 }
 
 .carousel-item {
@@ -1437,6 +1503,7 @@ html {
 .chat-bubble {
   position: relative;
   display: block;
+  width: -webkit-fit-content;
   width: -moz-fit-content;
   width: fit-content;
   padding-left: 1rem;
@@ -1560,6 +1627,7 @@ html {
   overflow: hidden;
   grid-template-rows: auto 0fr;
   transition: grid-template-rows 0.2s;
+  transition: grid-template-rows 0.2s, -ms-grid-rows 0.2s;
   width: 100%;
   border-radius: var(--rounded-box, 1rem);
 }
@@ -1610,6 +1678,7 @@ html {
 .collapse:not(.collapse-close) > input[type="checkbox"]:checked ~ .collapse-content,
 .collapse:not(.collapse-close) > input[type="radio"]:checked ~ .collapse-content {
   visibility: visible;
+  min-height: -webkit-fit-content;
   min-height: -moz-fit-content;
   min-height: fit-content;
 }
@@ -1756,6 +1825,7 @@ html {
 .drawer {
   position: relative;
   display: grid;
+  grid-auto-columns: -webkit-max-content auto;
   grid-auto-columns: max-content auto;
   width: 100%;
 }
@@ -1780,18 +1850,22 @@ html {
   align-items: flex-start;
   justify-items: start;
   overflow-y: auto;
-  overscroll-behavior: contain;
+  -ms-scroll-chaining: none;
+      overscroll-behavior: contain;
   height: 100vh;
   height: 100dvh;
 }
 
 .drawer-side > .drawer-overlay {
+  position: -webkit-sticky;
   position: sticky;
   top: 0px;
   place-self: stretch;
   cursor: pointer;
   background-color: transparent;
+  transition-property: color, background-color, border-color, fill, stroke, -webkit-text-decoration-color;
   transition-property: color, background-color, border-color, text-decoration-color, fill, stroke;
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, -webkit-text-decoration-color;
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
   transition-timing-function: cubic-bezier(0, 0, 0.2, 1);
   transition-duration: 200ms;
@@ -1835,6 +1909,7 @@ html {
 }
 
 .drawer-end {
+  grid-auto-columns: auto -webkit-max-content;
   grid-auto-columns: auto max-content;
 }
 
@@ -1880,9 +1955,9 @@ html {
   --tw-scale-x: .95;
   --tw-scale-y: .95;
   transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
-  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, -webkit-backdrop-filter;
+  transition-property: color, background-color, border-color, fill, stroke, opacity, box-shadow, transform, filter, -webkit-text-decoration-color, -webkit-backdrop-filter;
   transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter;
-  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter, -webkit-backdrop-filter;
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter, -webkit-text-decoration-color, -webkit-backdrop-filter;
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
   transition-timing-function: cubic-bezier(0, 0, 0.2, 1);
   transition-duration: 200ms;
@@ -1998,7 +2073,8 @@ html {
   .btn-link:hover {
     border-color: transparent;
     background-color: transparent;
-    text-decoration-line: underline;
+    -webkit-text-decoration-line: underline;
+            text-decoration-line: underline;
   }
 
   .btn-outline:hover {
@@ -2144,7 +2220,8 @@ html {
 .file-input {
   height: 3rem;
   flex-shrink: 1;
-  padding-inline-end: 1rem;
+  -webkit-padding-end: 1rem;
+          padding-inline-end: 1rem;
   font-size: 1rem;
   line-height: 2;
   line-height: 1.5rem;
@@ -2157,14 +2234,14 @@ html {
   background-color: var(--fallback-b1,oklch(var(--b1)/var(--tw-bg-opacity)));
 }
 
-.file-input::file-selector-button {
-  margin-inline-end: 1rem;
+.file-input::-webkit-file-upload-button {
+  -webkit-margin-end: 1rem;
+          margin-inline-end: 1rem;
   display: inline-flex;
   height: 100%;
   flex-shrink: 0;
   cursor: pointer;
   -webkit-user-select: none;
-     -moz-user-select: none;
           user-select: none;
   flex-wrap: wrap;
   align-items: center;
@@ -2175,9 +2252,10 @@ html {
   font-size: 0.875rem;
   line-height: 1.25rem;
   line-height: 1em;
-  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, -webkit-backdrop-filter;
+  -webkit-transition-property: color, background-color, border-color, fill, stroke, opacity, box-shadow, transform, filter, -webkit-text-decoration-color, -webkit-backdrop-filter;
+  transition-property: color, background-color, border-color, fill, stroke, opacity, box-shadow, transform, filter, -webkit-text-decoration-color, -webkit-backdrop-filter;
   transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter;
-  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter, -webkit-backdrop-filter;
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter, -webkit-text-decoration-color, -webkit-backdrop-filter;
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
   transition-timing-function: cubic-bezier(0, 0, 0.2, 1);
   transition-duration: 200ms;
@@ -2190,9 +2268,53 @@ html {
   text-transform: uppercase;
   --tw-text-opacity: 1;
   color: var(--fallback-nc,oklch(var(--nc)/var(--tw-text-opacity)));
-  text-decoration-line: none;
+  -webkit-text-decoration-line: none;
+          text-decoration-line: none;
   border-width: var(--border-btn, 1px);
-  animation: button-pop var(--animation-btn, 0.25s) ease-out;
+  -webkit-animation: button-pop var(--animation-btn, 0.25s) ease-out;
+          animation: button-pop var(--animation-btn, 0.25s) ease-out;
+}
+
+.file-input::file-selector-button {
+  -webkit-margin-end: 1rem;
+          margin-inline-end: 1rem;
+  display: inline-flex;
+  height: 100%;
+  flex-shrink: 0;
+  cursor: pointer;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+      -ms-user-select: none;
+          user-select: none;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  text-align: center;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  line-height: 1em;
+  transition-property: color, background-color, border-color, fill, stroke, opacity, box-shadow, transform, filter, -webkit-text-decoration-color, -webkit-backdrop-filter;
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter;
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter, -webkit-text-decoration-color, -webkit-backdrop-filter;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-timing-function: cubic-bezier(0, 0, 0.2, 1);
+  transition-duration: 200ms;
+  border-style: solid;
+  --tw-border-opacity: 1;
+  border-color: var(--fallback-n,oklch(var(--n)/var(--tw-border-opacity)));
+  --tw-bg-opacity: 1;
+  background-color: var(--fallback-n,oklch(var(--n)/var(--tw-bg-opacity)));
+  font-weight: 600;
+  text-transform: uppercase;
+  --tw-text-opacity: 1;
+  color: var(--fallback-nc,oklch(var(--nc)/var(--tw-text-opacity)));
+  -webkit-text-decoration-line: none;
+          text-decoration-line: none;
+  border-width: var(--border-btn, 1px);
+  -webkit-animation: button-pop var(--animation-btn, 0.25s) ease-out;
+          animation: button-pop var(--animation-btn, 0.25s) ease-out;
 }
 
 .footer {
@@ -2241,6 +2363,7 @@ html {
   display: flex;
   -webkit-user-select: none;
      -moz-user-select: none;
+      -ms-user-select: none;
           user-select: none;
   align-items: center;
   justify-content: space-between;
@@ -2285,6 +2408,7 @@ html {
 .indicator {
   position: relative;
   display: inline-flex;
+  width: -webkit-max-content;
   width: -moz-max-content;
   width: max-content;
 }
@@ -2414,11 +2538,13 @@ html {
 
 .link {
   cursor: pointer;
-  text-decoration-line: underline;
+  -webkit-text-decoration-line: underline;
+          text-decoration-line: underline;
 }
 
 .link-hover {
-  text-decoration-line: none;
+  -webkit-text-decoration-line: none;
+          text-decoration-line: none;
 }
 
 .mask {
@@ -2466,8 +2592,10 @@ html {
 .menu :where(li ul) {
   position: relative;
   white-space: nowrap;
-  margin-inline-start: 1rem;
-  padding-inline-start: 0.5rem;
+  -webkit-margin-start: 1rem;
+          margin-inline-start: 1rem;
+  -webkit-padding-start: 0.5rem;
+          padding-inline-start: 0.5rem;
 }
 
 .menu :where(li:not(.menu-title) > *:not(ul):not(details):not(.menu-title)),
@@ -2477,9 +2605,11 @@ html {
   align-content: flex-start;
   align-items: center;
   gap: 0.5rem;
+  grid-auto-columns: minmax(auto, -webkit-max-content) auto -webkit-max-content;
   grid-auto-columns: minmax(auto, max-content) auto max-content;
   -webkit-user-select: none;
      -moz-user-select: none;
+      -ms-user-select: none;
           user-select: none;
 }
 
@@ -2487,6 +2617,7 @@ html {
   cursor: not-allowed;
   -webkit-user-select: none;
      -moz-user-select: none;
+      -ms-user-select: none;
           user-select: none;
   color: var(--fallback-bc,oklch(var(--bc)/0.3));
 }
@@ -2573,7 +2704,8 @@ html {
   justify-items: center;
   padding: 0px;
   opacity: 0;
-  overscroll-behavior: contain;
+  -ms-scroll-chaining: none;
+      overscroll-behavior: contain;
   z-index: 999;
   background-color: transparent;
   color: inherit;
@@ -2584,7 +2716,8 @@ html {
 }
 
 .modal-scroll {
-  overscroll-behavior: auto;
+  -ms-scroll-chaining: chained;
+      overscroll-behavior: auto;
 }
 
 :where(.modal) {
@@ -2607,15 +2740,16 @@ html {
   --tw-bg-opacity: 1;
   background-color: var(--fallback-b1,oklch(var(--b1)/var(--tw-bg-opacity)));
   padding: 1.5rem;
-  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, -webkit-backdrop-filter;
+  transition-property: color, background-color, border-color, fill, stroke, opacity, box-shadow, transform, filter, -webkit-text-decoration-color, -webkit-backdrop-filter;
   transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter;
-  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter, -webkit-backdrop-filter;
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter, -webkit-text-decoration-color, -webkit-backdrop-filter;
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
   transition-timing-function: cubic-bezier(0, 0, 0.2, 1);
   transition-duration: 200ms;
   box-shadow: rgba(0, 0, 0, 0.25) 0px 25px 50px -12px;
   overflow-y: auto;
-  overscroll-behavior: contain;
+  -ms-scroll-chaining: none;
+      overscroll-behavior: contain;
 }
 
 .modal-open,
@@ -2789,7 +2923,8 @@ html {
 .rating :where(input) {
   cursor: pointer;
   border-radius: 0px;
-  animation: rating-pop var(--animation-input, 0.25s) ease-out;
+  -webkit-animation: rating-pop var(--animation-input, 0.25s) ease-out;
+          animation: rating-pop var(--animation-input, 0.25s) ease-out;
   height: 1.5rem;
   width: 1.5rem;
   background-color: var(--fallback-bc,oklch(var(--bc)/var(--tw-bg-opacity)));
@@ -2801,6 +2936,7 @@ html {
   cursor: pointer;
   -webkit-user-select: none;
      -moz-user-select: none;
+      -ms-user-select: none;
           user-select: none;
   -webkit-appearance: none;
      -moz-appearance: none;
@@ -2974,6 +3110,7 @@ html {
   display: inline-grid;
   -webkit-user-select: none;
      -moz-user-select: none;
+      -ms-user-select: none;
           user-select: none;
   place-content: center;
   cursor: pointer;
@@ -3029,6 +3166,7 @@ html {
   cursor: pointer;
   -webkit-user-select: none;
      -moz-user-select: none;
+      -ms-user-select: none;
           user-select: none;
   -webkit-appearance: none;
      -moz-appearance: none;
@@ -3046,8 +3184,10 @@ html {
   --tab-bg: var(--fallback-b1,oklch(var(--b1)/1));
   --tab-border-color: var(--fallback-b3,oklch(var(--b3)/1));
   color: var(--tab-color);
-  padding-inline-start: var(--tab-padding, 1rem);
-  padding-inline-end: var(--tab-padding, 1rem);
+  -webkit-padding-start: var(--tab-padding, 1rem);
+          padding-inline-start: var(--tab-padding, 1rem);
+  -webkit-padding-end: var(--tab-padding, 1rem);
+          padding-inline-end: var(--tab-padding, 1rem);
 }
 
 .tab:is(input[type="radio"]) {
@@ -3096,6 +3236,7 @@ input.tab:checked + .tab-content,
 }
 
 .table :where(.table-pin-rows thead tr) {
+  position: -webkit-sticky;
   position: sticky;
   top: 0px;
   z-index: 1;
@@ -3104,6 +3245,7 @@ input.tab:checked + .tab-content,
 }
 
 .table :where(.table-pin-rows tfoot tr) {
+  position: -webkit-sticky;
   position: sticky;
   bottom: 0px;
   z-index: 1;
@@ -3112,6 +3254,7 @@ input.tab:checked + .tab-content,
 }
 
 .table :where(.table-pin-cols tr th) {
+  position: -webkit-sticky;
   position: sticky;
   left: 0px;
   right: 0px;
@@ -3206,6 +3349,7 @@ input.tab:checked + .tab-content,
 .toast {
   position: fixed;
   display: flex;
+  min-width: -webkit-fit-content;
   min-width: -moz-fit-content;
   min-width: fit-content;
   flex-direction: column;
@@ -3464,7 +3608,8 @@ input.tab:checked + .tab-content,
 
 .btn:active:hover,
   .btn:active:focus {
-  animation: button-pop 0s ease-out;
+  -webkit-animation: button-pop 0s ease-out;
+          animation: button-pop 0s ease-out;
   transform: scale(var(--btn-focus-scale, 0.97));
 }
 
@@ -3682,7 +3827,8 @@ input.tab:checked + .tab-content,
   background-color: transparent;
   --tw-text-opacity: 1;
   color: var(--fallback-p,oklch(var(--p)/var(--tw-text-opacity)));
-  text-decoration-line: underline;
+  -webkit-text-decoration-line: underline;
+          text-decoration-line: underline;
   --tw-shadow: 0 0 #0000;
   --tw-shadow-colored: 0 0 #0000;
   box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
@@ -3692,7 +3838,8 @@ input.tab:checked + .tab-content,
 .btn-link.btn-active {
   border-color: transparent;
   background-color: transparent;
-  text-decoration-line: underline;
+  -webkit-text-decoration-line: underline;
+          text-decoration-line: underline;
 }
 
 .btn-outline {
@@ -3806,6 +3953,20 @@ input.tab:checked + .tab-content,
 
 .btn:is(input[type="checkbox"]:checked):focus-visible, .btn:is(input[type="radio"]:checked):focus-visible {
   outline-color: var(--fallback-p,oklch(var(--p)/1));
+}
+
+@-webkit-keyframes button-pop {
+  0% {
+    transform: scale(var(--btn-focus-scale, 0.98));
+  }
+
+  40% {
+    transform: scale(1.02);
+  }
+
+  100% {
+    transform: scale(1);
+  }
 }
 
 @keyframes button-pop {
@@ -3943,7 +4104,8 @@ input.tab:checked + .tab-content,
   .checkbox[checked="true"],
   .checkbox[aria-checked="true"] {
   background-repeat: no-repeat;
-  animation: checkmark var(--animation-input, 0.2s) ease-out;
+  -webkit-animation: checkmark var(--animation-input, 0.2s) ease-out;
+          animation: checkmark var(--animation-input, 0.2s) ease-out;
   background-color: var(--chkbg);
   background-image: linear-gradient(-45deg, transparent 65%, var(--chkbg) 65.99%),
       linear-gradient(45deg, transparent 75%, var(--chkbg) 75.99%),
@@ -3962,7 +4124,8 @@ input.tab:checked + .tab-content,
   --tw-bg-opacity: 1;
   background-color: var(--fallback-bc,oklch(var(--bc)/var(--tw-bg-opacity)));
   background-repeat: no-repeat;
-  animation: checkmark var(--animation-input, 0.2s) ease-out;
+  -webkit-animation: checkmark var(--animation-input, 0.2s) ease-out;
+          animation: checkmark var(--animation-input, 0.2s) ease-out;
   background-image: linear-gradient(90deg, transparent 80%, var(--chkbg) 80%),
       linear-gradient(-90deg, transparent 80%, var(--chkbg) 80%),
       linear-gradient(0deg, var(--chkbg) 43%, var(--chkfg) 43%, var(--chkfg) 57%, var(--chkbg) 57%);
@@ -4130,6 +4293,20 @@ input.tab:checked + .tab-content,
   opacity: 0.2;
 }
 
+@-webkit-keyframes checkmark {
+  0% {
+    background-position-y: 5px;
+  }
+
+  50% {
+    background-position-y: -2px;
+  }
+
+  100% {
+    background-position-y: 0;
+  }
+}
+
 @keyframes checkmark {
   0% {
     background-position-y: 5px;
@@ -4239,7 +4416,8 @@ details.collapse summary::-webkit-details-marker {
 :where(.collapse > input[type="radio"]) {
   width: 100%;
   padding: 1rem;
-  padding-inline-end: 3rem;
+  -webkit-padding-end: 3rem;
+          padding-inline-end: 3rem;
   min-height: 3.75rem;
   transition: background-color 0.2s ease-out;
 }
@@ -4316,6 +4494,13 @@ details.collapse summary::-webkit-details-marker {
   box-shadow: none;
 }
 
+.file-input-ghost::-webkit-file-upload-button {
+  border-width: 1px;
+  border-color: transparent;
+  background-color: transparent;
+  color: currentColor;
+}
+
 .file-input-ghost::file-selector-button {
   border-width: 1px;
   border-color: transparent;
@@ -4330,6 +4515,15 @@ details.collapse summary::-webkit-details-marker {
 
 .file-input-primary:focus {
   outline-color: var(--fallback-p,oklch(var(--p)/1));
+}
+
+.file-input-primary::-webkit-file-upload-button {
+  --tw-border-opacity: 1;
+  border-color: var(--fallback-p,oklch(var(--p)/var(--tw-border-opacity)));
+  --tw-bg-opacity: 1;
+  background-color: var(--fallback-p,oklch(var(--p)/var(--tw-bg-opacity)));
+  --tw-text-opacity: 1;
+  color: var(--fallback-pc,oklch(var(--pc)/var(--tw-text-opacity)));
 }
 
 .file-input-primary::file-selector-button {
@@ -4350,6 +4544,15 @@ details.collapse summary::-webkit-details-marker {
   outline-color: var(--fallback-s,oklch(var(--s)/1));
 }
 
+.file-input-secondary::-webkit-file-upload-button {
+  --tw-border-opacity: 1;
+  border-color: var(--fallback-s,oklch(var(--s)/var(--tw-border-opacity)));
+  --tw-bg-opacity: 1;
+  background-color: var(--fallback-s,oklch(var(--s)/var(--tw-bg-opacity)));
+  --tw-text-opacity: 1;
+  color: var(--fallback-sc,oklch(var(--sc)/var(--tw-text-opacity)));
+}
+
 .file-input-secondary::file-selector-button {
   --tw-border-opacity: 1;
   border-color: var(--fallback-s,oklch(var(--s)/var(--tw-border-opacity)));
@@ -4366,6 +4569,15 @@ details.collapse summary::-webkit-details-marker {
 
 .file-input-accent:focus {
   outline-color: var(--fallback-a,oklch(var(--a)/1));
+}
+
+.file-input-accent::-webkit-file-upload-button {
+  --tw-border-opacity: 1;
+  border-color: var(--fallback-a,oklch(var(--a)/var(--tw-border-opacity)));
+  --tw-bg-opacity: 1;
+  background-color: var(--fallback-a,oklch(var(--a)/var(--tw-bg-opacity)));
+  --tw-text-opacity: 1;
+  color: var(--fallback-ac,oklch(var(--ac)/var(--tw-text-opacity)));
 }
 
 .file-input-accent::file-selector-button {
@@ -4386,6 +4598,15 @@ details.collapse summary::-webkit-details-marker {
   outline-color: var(--fallback-in,oklch(var(--in)/1));
 }
 
+.file-input-info::-webkit-file-upload-button {
+  --tw-border-opacity: 1;
+  border-color: var(--fallback-in,oklch(var(--in)/var(--tw-border-opacity)));
+  --tw-bg-opacity: 1;
+  background-color: var(--fallback-in,oklch(var(--in)/var(--tw-bg-opacity)));
+  --tw-text-opacity: 1;
+  color: var(--fallback-inc,oklch(var(--inc)/var(--tw-text-opacity)));
+}
+
 .file-input-info::file-selector-button {
   --tw-border-opacity: 1;
   border-color: var(--fallback-in,oklch(var(--in)/var(--tw-border-opacity)));
@@ -4402,6 +4623,15 @@ details.collapse summary::-webkit-details-marker {
 
 .file-input-success:focus {
   outline-color: var(--fallback-su,oklch(var(--su)/1));
+}
+
+.file-input-success::-webkit-file-upload-button {
+  --tw-border-opacity: 1;
+  border-color: var(--fallback-su,oklch(var(--su)/var(--tw-border-opacity)));
+  --tw-bg-opacity: 1;
+  background-color: var(--fallback-su,oklch(var(--su)/var(--tw-bg-opacity)));
+  --tw-text-opacity: 1;
+  color: var(--fallback-suc,oklch(var(--suc)/var(--tw-text-opacity)));
 }
 
 .file-input-success::file-selector-button {
@@ -4422,6 +4652,15 @@ details.collapse summary::-webkit-details-marker {
   outline-color: var(--fallback-wa,oklch(var(--wa)/1));
 }
 
+.file-input-warning::-webkit-file-upload-button {
+  --tw-border-opacity: 1;
+  border-color: var(--fallback-wa,oklch(var(--wa)/var(--tw-border-opacity)));
+  --tw-bg-opacity: 1;
+  background-color: var(--fallback-wa,oklch(var(--wa)/var(--tw-bg-opacity)));
+  --tw-text-opacity: 1;
+  color: var(--fallback-wac,oklch(var(--wac)/var(--tw-text-opacity)));
+}
+
 .file-input-warning::file-selector-button {
   --tw-border-opacity: 1;
   border-color: var(--fallback-wa,oklch(var(--wa)/var(--tw-border-opacity)));
@@ -4438,6 +4677,15 @@ details.collapse summary::-webkit-details-marker {
 
 .file-input-error:focus {
   outline-color: var(--fallback-er,oklch(var(--er)/1));
+}
+
+.file-input-error::-webkit-file-upload-button {
+  --tw-border-opacity: 1;
+  border-color: var(--fallback-er,oklch(var(--er)/var(--tw-border-opacity)));
+  --tw-bg-opacity: 1;
+  background-color: var(--fallback-er,oklch(var(--er)/var(--tw-bg-opacity)));
+  --tw-text-opacity: 1;
+  color: var(--fallback-erc,oklch(var(--erc)/var(--tw-text-opacity)));
 }
 
 .file-input-error::file-selector-button {
@@ -4464,10 +4712,23 @@ details.collapse summary::-webkit-details-marker {
   --tw-placeholder-opacity: 0.2;
 }
 
+.file-input-disabled:-ms-input-placeholder, .file-input[disabled]:-ms-input-placeholder {
+  color: var(--fallback-bc,oklch(var(--bc)/var(--tw-placeholder-opacity)));
+  --tw-placeholder-opacity: 0.2;
+}
+
 .file-input-disabled::placeholder,
   .file-input[disabled]::placeholder {
   color: var(--fallback-bc,oklch(var(--bc)/var(--tw-placeholder-opacity)));
   --tw-placeholder-opacity: 0.2;
+}
+
+.file-input-disabled::-webkit-file-upload-button, .file-input[disabled]::-webkit-file-upload-button {
+  --tw-border-opacity: 0;
+  background-color: var(--fallback-n,oklch(var(--n)/var(--tw-bg-opacity)));
+  --tw-bg-opacity: 0.2;
+  color: var(--fallback-bc,oklch(var(--bc)/var(--tw-text-opacity)));
+  --tw-text-opacity: 0.2;
 }
 
 .file-input-disabled::file-selector-button, .file-input[disabled]::file-selector-button {
@@ -4685,6 +4946,11 @@ details.collapse summary::-webkit-details-marker {
   --tw-placeholder-opacity: 0.2 !important;
 }
 
+.\!input:disabled:-ms-input-placeholder, .\!input[disabled]:-ms-input-placeholder {
+  color: var(--fallback-bc,oklch(var(--bc)/var(--tw-placeholder-opacity))) !important;
+  --tw-placeholder-opacity: 0.2 !important;
+}
+
 
   .\!input:disabled::placeholder,
   .\!input[disabled]::placeholder {
@@ -4697,6 +4963,11 @@ details.collapse summary::-webkit-details-marker {
   --tw-placeholder-opacity: 0.2;
 }
 
+.input-disabled:-ms-input-placeholder, .input:disabled:-ms-input-placeholder, .input[disabled]:-ms-input-placeholder {
+  color: var(--fallback-bc,oklch(var(--bc)/var(--tw-placeholder-opacity)));
+  --tw-placeholder-opacity: 0.2;
+}
+
 .input-disabled::placeholder,
   .input:disabled::placeholder,
   .input[disabled]::placeholder {
@@ -4705,6 +4976,11 @@ details.collapse summary::-webkit-details-marker {
 }
 
 .\!input:disabled::-moz-placeholder, .\!input[disabled]::-moz-placeholder {
+  color: var(--fallback-bc,oklch(var(--bc)/var(--tw-placeholder-opacity))) !important;
+  --tw-placeholder-opacity: 0.2 !important;
+}
+
+.\!input:disabled:-ms-input-placeholder, .\!input[disabled]:-ms-input-placeholder {
   color: var(--fallback-bc,oklch(var(--bc)/var(--tw-placeholder-opacity))) !important;
   --tw-placeholder-opacity: 0.2 !important;
 }
@@ -4727,7 +5003,8 @@ details.collapse summary::-webkit-details-marker {
 .join > :where(*:not(:first-child)) {
   margin-top: 0px;
   margin-bottom: 0px;
-  margin-inline-start: -1px;
+  -webkit-margin-start: -1px;
+          margin-inline-start: -1px;
 }
 
 .join-item:focus {
@@ -5005,9 +5282,9 @@ details.collapse summary::-webkit-details-marker {
   padding-top: 0.5rem;
   padding-bottom: 0.5rem;
   text-align: start;
-  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, -webkit-backdrop-filter;
+  transition-property: color, background-color, border-color, fill, stroke, opacity, box-shadow, transform, filter, -webkit-text-decoration-color, -webkit-backdrop-filter;
   transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter;
-  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter, -webkit-backdrop-filter;
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter, -webkit-text-decoration-color, -webkit-backdrop-filter;
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
   transition-timing-function: cubic-bezier(0, 0, 0.2, 1);
   transition-duration: 200ms;
@@ -5286,10 +5563,17 @@ details.collapse summary::-webkit-details-marker {
   opacity: 0.6 !important;
 }
 
+.modal::-webkit-backdrop {
+  background-color: #0006;
+  -webkit-animation: modal-pop 0.2s ease-out;
+          animation: modal-pop 0.2s ease-out;
+}
+
 .modal:not(dialog:not(.modal-open)),
   .modal::backdrop {
   background-color: #0006;
-  animation: modal-pop 0.2s ease-out;
+  -webkit-animation: modal-pop 0.2s ease-out;
+          animation: modal-pop 0.2s ease-out;
 }
 
 .modal-backdrop {
@@ -5318,6 +5602,12 @@ details.collapse summary::-webkit-details-marker {
   margin-left: calc(0.5rem * calc(1 - var(--tw-space-x-reverse)));
 }
 
+@-webkit-keyframes modal-pop {
+  0% {
+    opacity: 0;
+  }
+}
+
 @keyframes modal-pop {
   0% {
     opacity: 0;
@@ -5341,7 +5631,8 @@ details.collapse summary::-webkit-details-marker {
   );
   background-size: 200%;
   background-position-x: 15%;
-  animation: progress-loading 5s ease-in-out infinite;
+  -webkit-animation: progress-loading 5s ease-in-out infinite;
+          animation: progress-loading 5s ease-in-out infinite;
 }
 
 .progress::-webkit-progress-bar {
@@ -5369,6 +5660,12 @@ details.collapse summary::-webkit-details-marker {
   animation: progress-loading 5s ease-in-out infinite;
 }
 
+@-webkit-keyframes progress-loading {
+  50% {
+    background-position-x: -115%;
+  }
+}
+
 @keyframes progress-loading {
   50% {
     background-position-x: -115%;
@@ -5391,7 +5688,8 @@ details.collapse summary::-webkit-details-marker {
   --tw-bg-opacity: 1;
   background-color: var(--fallback-bc,oklch(var(--bc)/var(--tw-bg-opacity)));
   background-image: none;
-  animation: radiomark var(--animation-input, 0.2s) ease-out;
+  -webkit-animation: radiomark var(--animation-input, 0.2s) ease-out;
+          animation: radiomark var(--animation-input, 0.2s) ease-out;
   box-shadow: 0 0 0 4px var(--fallback-b1,oklch(var(--b1)/1)) inset,
       0 0 0 4px var(--fallback-b1,oklch(var(--b1)/1)) inset;
 }
@@ -5541,6 +5839,23 @@ details.collapse summary::-webkit-details-marker {
   opacity: 0.2;
 }
 
+@-webkit-keyframes radiomark {
+  0% {
+    box-shadow: 0 0 0 12px var(--fallback-b1,oklch(var(--b1)/1)) inset,
+      0 0 0 12px var(--fallback-b1,oklch(var(--b1)/1)) inset;
+  }
+
+  50% {
+    box-shadow: 0 0 0 3px var(--fallback-b1,oklch(var(--b1)/1)) inset,
+      0 0 0 3px var(--fallback-b1,oklch(var(--b1)/1)) inset;
+  }
+
+  100% {
+    box-shadow: 0 0 0 4px var(--fallback-b1,oklch(var(--b1)/1)) inset,
+      0 0 0 4px var(--fallback-b1,oklch(var(--b1)/1)) inset;
+  }
+}
+
 @keyframes radiomark {
   0% {
     box-shadow: 0 0 0 12px var(--fallback-b1,oklch(var(--b1)/1)) inset,
@@ -5678,12 +5993,27 @@ details.collapse summary::-webkit-details-marker {
 }
 
 .rating input:active:focus {
-  animation: none;
+  -webkit-animation: none;
+          animation: none;
   transform: translateY(-0.125em);
 }
 
 .rating-half :where(input:not(.rating-hidden)) {
   width: 0.75rem;
+}
+
+@-webkit-keyframes rating-pop {
+  0% {
+    transform: translateY(-0.125em);
+  }
+
+  40% {
+    transform: translateY(-0.125em);
+  }
+
+  100% {
+    transform: translateY(0);
+  }
 }
 
 @keyframes rating-pop {
@@ -5816,6 +6146,11 @@ details.collapse summary::-webkit-details-marker {
   --tw-placeholder-opacity: 0.2;
 }
 
+.select-disabled:-ms-input-placeholder, .select:disabled:-ms-input-placeholder, .select[disabled]:-ms-input-placeholder {
+  color: var(--fallback-bc,oklch(var(--bc)/var(--tw-placeholder-opacity)));
+  --tw-placeholder-opacity: 0.2;
+}
+
 .select-disabled::placeholder,
   .select:disabled::placeholder,
   .select[disabled]::placeholder {
@@ -5840,7 +6175,8 @@ details.collapse summary::-webkit-details-marker {
   --tw-bg-opacity: 1;
   background-color: var(--fallback-b3,oklch(var(--b3)/var(--tw-bg-opacity)));
   will-change: background-position;
-  animation: skeleton 1.8s ease-in-out infinite;
+  -webkit-animation: skeleton 1.8s ease-in-out infinite;
+          animation: skeleton 1.8s ease-in-out infinite;
   background-image: linear-gradient(
     105deg,
     transparent 0%,
@@ -5856,7 +6192,18 @@ details.collapse summary::-webkit-details-marker {
 
 @media (prefers-reduced-motion) {
   .skeleton {
-    animation-duration: 15s;
+    -webkit-animation-duration: 15s;
+            animation-duration: 15s;
+  }
+}
+
+@-webkit-keyframes skeleton {
+  from {
+    background-position: 150%;
+  }
+
+  to {
+    background-position: -50%;
   }
 }
 
@@ -5908,7 +6255,8 @@ details.collapse summary::-webkit-details-marker {
   --tw-text-opacity: 1;
   color: var(--fallback-bc,oklch(var(--bc)/var(--tw-text-opacity)));
   content: "";
-  margin-inline-start: -100%;
+  -webkit-margin-start: -100%;
+          margin-inline-start: -100%;
 }
 
 .steps .step:after {
@@ -6048,7 +6396,8 @@ details.collapse summary::-webkit-details-marker {
 .swap-flip .swap-indeterminate,
 .swap-flip input:indeterminate ~ .swap-on {
   transform: rotateY(180deg);
-  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+          backface-visibility: hidden;
   opacity: 1;
 }
 
@@ -6056,7 +6405,8 @@ details.collapse summary::-webkit-details-marker {
 .swap-active:where(.swap-flip) .swap-off,
 .swap-flip input:indeterminate ~ .swap-off {
   transform: rotateY(-180deg);
-  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+          backface-visibility: hidden;
   opacity: 1;
 }
 
@@ -6108,8 +6458,10 @@ details.collapse summary::-webkit-details-marker {
   border-start-start-radius: var(--tab-radius, 0.5rem);
   border-start-end-radius: var(--tab-radius, 0.5rem);
   border-bottom-color: var(--tab-border-color);
-  padding-inline-start: var(--tab-padding, 1rem);
-  padding-inline-end: var(--tab-padding, 1rem);
+  -webkit-padding-start: var(--tab-padding, 1rem);
+          padding-inline-start: var(--tab-padding, 1rem);
+  -webkit-padding-end: var(--tab-padding, 1rem);
+          padding-inline-end: var(--tab-padding, 1rem);
   padding-top: var(--tab-border, 1px);
 }
 
@@ -6120,8 +6472,10 @@ details.collapse summary::-webkit-details-marker {
   border-inline-start-color: var(--tab-border-color);
   border-inline-end-color: var(--tab-border-color);
   border-top-color: var(--tab-border-color);
-  padding-inline-start: calc(var(--tab-padding, 1rem) - var(--tab-border, 1px));
-  padding-inline-end: calc(var(--tab-padding, 1rem) - var(--tab-border, 1px));
+  -webkit-padding-start: calc(var(--tab-padding, 1rem) - var(--tab-border, 1px));
+          padding-inline-start: calc(var(--tab-padding, 1rem) - var(--tab-border, 1px));
+  -webkit-padding-end: calc(var(--tab-padding, 1rem) - var(--tab-border, 1px));
+          padding-inline-end: calc(var(--tab-padding, 1rem) - var(--tab-border, 1px));
   padding-bottom: var(--tab-border, 1px);
   padding-top: 0;
 }
@@ -6361,6 +6715,11 @@ details.collapse summary::-webkit-details-marker {
   --tw-placeholder-opacity: 0.2;
 }
 
+.textarea-disabled:-ms-input-placeholder, .textarea:disabled:-ms-input-placeholder, .textarea[disabled]:-ms-input-placeholder {
+  color: var(--fallback-bc,oklch(var(--bc)/var(--tw-placeholder-opacity)));
+  --tw-placeholder-opacity: 0.2;
+}
+
 .textarea-disabled::placeholder,
   .textarea:disabled::placeholder,
   .textarea[disabled]::placeholder {
@@ -6422,7 +6781,20 @@ details.collapse summary::-webkit-details-marker {
 }
 
 .toast > * {
-  animation: toast-pop 0.25s ease-out;
+  -webkit-animation: toast-pop 0.25s ease-out;
+          animation: toast-pop 0.25s ease-out;
+}
+
+@-webkit-keyframes toast-pop {
+  0% {
+    transform: scale(0.9);
+    opacity: 0;
+  }
+
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
 }
 
 @keyframes toast-pop {
@@ -7051,10 +7423,12 @@ details.collapse summary::-webkit-details-marker {
 .drawer-open > .drawer-toggle ~ .drawer-side {
   pointer-events: auto;
   visibility: visible;
+  position: -webkit-sticky;
   position: sticky;
   display: block;
   width: auto;
-  overscroll-behavior: auto;
+  -ms-scroll-chaining: chained;
+      overscroll-behavior: auto;
 }
 
 .drawer-open > .drawer-toggle ~ .drawer-side > *:not(.drawer-overlay) {
@@ -7072,10 +7446,16 @@ details.collapse summary::-webkit-details-marker {
 
 .file-input-xs {
   height: 1.5rem;
-  padding-inline-end: 0.5rem;
+  -webkit-padding-end: 0.5rem;
+          padding-inline-end: 0.5rem;
   font-size: 0.75rem;
   line-height: 1rem;
   line-height: 1.625;
+}
+
+.file-input-xs::-webkit-file-upload-button {
+  margin-right: 0.5rem;
+  font-size: 0.75rem;
 }
 
 .file-input-xs::file-selector-button {
@@ -7085,10 +7465,16 @@ details.collapse summary::-webkit-details-marker {
 
 .file-input-sm {
   height: 2rem;
-  padding-inline-end: 0.75rem;
+  -webkit-padding-end: 0.75rem;
+          padding-inline-end: 0.75rem;
   font-size: 0.875rem;
   line-height: 1.25rem;
   line-height: 2;
+}
+
+.file-input-sm::-webkit-file-upload-button {
+  margin-right: 0.75rem;
+  font-size: 0.875rem;
 }
 
 .file-input-sm::file-selector-button {
@@ -7098,10 +7484,16 @@ details.collapse summary::-webkit-details-marker {
 
 .file-input-md {
   height: 3rem;
-  padding-inline-end: 1rem;
+  -webkit-padding-end: 1rem;
+          padding-inline-end: 1rem;
   font-size: 0.875rem;
   line-height: 1.25rem;
   line-height: 2;
+}
+
+.file-input-md::-webkit-file-upload-button {
+  margin-right: 1rem;
+  font-size: 0.875rem;
 }
 
 .file-input-md::file-selector-button {
@@ -7111,10 +7503,16 @@ details.collapse summary::-webkit-details-marker {
 
 .file-input-lg {
   height: 4rem;
-  padding-inline-end: 1.5rem;
+  -webkit-padding-end: 1.5rem;
+          padding-inline-end: 1.5rem;
   font-size: 1.125rem;
   line-height: 1.75rem;
   line-height: 2;
+}
+
+.file-input-lg::-webkit-file-upload-button {
+  margin-right: 1.5rem;
+  font-size: 1.125rem;
 }
 
 .file-input-lg::file-selector-button {
@@ -7984,15 +8382,18 @@ details.collapse summary::-webkit-details-marker {
 .join.join-horizontal > :where(*:not(:first-child)) {
   margin-top: 0px;
   margin-bottom: 0px;
-  margin-inline-start: -1px;
+  -webkit-margin-start: -1px;
+          margin-inline-start: -1px;
 }
 
 .menu-horizontal > li:not(.menu-title) > details > ul {
-  margin-inline-start: 0px;
+  -webkit-margin-start: 0px;
+          margin-inline-start: 0px;
   margin-top: 1rem;
   padding-top: 0.5rem;
   padding-bottom: 0.5rem;
-  padding-inline-end: 0.5rem;
+  -webkit-padding-end: 0.5rem;
+          padding-inline-end: 0.5rem;
 }
 
 .menu-horizontal > li > details > ul:before {
@@ -8009,11 +8410,13 @@ details.collapse summary::-webkit-details-marker {
 }
 
 .menu-vertical > li:not(.menu-title) > details > ul {
-  margin-inline-start: 1rem;
+  -webkit-margin-start: 1rem;
+          margin-inline-start: 1rem;
   margin-top: 0px;
   padding-top: 0px;
   padding-bottom: 0px;
-  padding-inline-end: 0px;
+  -webkit-padding-end: 0px;
+          padding-inline-end: 0px;
 }
 
 .menu-xs :where(li:not(.menu-title) > *:not(ul):not(details):not(.menu-title)),
@@ -8170,7 +8573,8 @@ details.collapse summary::-webkit-details-marker {
   --tw-translate-y: 0px;
   transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
   content: "";
-  margin-inline-start: -100%;
+  -webkit-margin-start: -100%;
+          margin-inline-start: -100%;
 }
 
 :is([dir="rtl"] .steps-horizontal .step):before {
@@ -8192,7 +8596,8 @@ details.collapse summary::-webkit-details-marker {
   --tw-translate-x: -50%;
   --tw-translate-y: -50%;
   transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
-  margin-inline-start: 50%;
+  -webkit-margin-start: 50%;
+          margin-inline-start: 50%;
 }
 
 :is([dir="rtl"] .steps-vertical .step):before {
@@ -8325,9 +8730,9 @@ details.collapse summary::-webkit-details-marker {
 .tooltip:before,
 .tooltip:after {
   opacity: 0;
-  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, -webkit-backdrop-filter;
+  transition-property: color, background-color, border-color, fill, stroke, opacity, box-shadow, transform, filter, -webkit-text-decoration-color, -webkit-backdrop-filter;
   transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter;
-  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter, -webkit-backdrop-filter;
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter, -webkit-text-decoration-color, -webkit-backdrop-filter;
   transition-delay: 100ms;
   transition-duration: 200ms;
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
@@ -8354,6 +8759,7 @@ details.collapse summary::-webkit-details-marker {
   line-height: 1.25rem;
   background-color: var(--tooltip-color);
   color: var(--tooltip-text-color);
+  width: -webkit-max-content;
   width: -moz-max-content;
   width: max-content;
 }
@@ -8498,6 +8904,7 @@ details.collapse summary::-webkit-details-marker {
 }
 
 .sticky {
+  position: -webkit-sticky;
   position: sticky;
 }
 
@@ -8704,6 +9111,10 @@ details.collapse summary::-webkit-details-marker {
   height: 1.25rem;
 }
 
+.max-h-\[450px\] {
+  max-height: 450px;
+}
+
 .min-h-full {
   min-height: 100%;
 }
@@ -8874,12 +9285,14 @@ details.collapse summary::-webkit-details-marker {
 .select-none {
   -webkit-user-select: none;
      -moz-user-select: none;
+      -ms-user-select: none;
           user-select: none;
 }
 
 .select-text {
   -webkit-user-select: text;
      -moz-user-select: text;
+      -ms-user-select: text;
           user-select: text;
 }
 
@@ -8892,6 +9305,7 @@ details.collapse summary::-webkit-details-marker {
 .select-auto {
   -webkit-user-select: auto;
      -moz-user-select: auto;
+      -ms-user-select: auto;
           user-select: auto;
 }
 
@@ -8912,19 +9326,23 @@ details.collapse summary::-webkit-details-marker {
 }
 
 .snap-none {
-  scroll-snap-type: none;
+  -ms-scroll-snap-type: none;
+      scroll-snap-type: none;
 }
 
 .snap-x {
-  scroll-snap-type: x var(--tw-scroll-snap-strictness);
+  -ms-scroll-snap-type: x var(--tw-scroll-snap-strictness);
+      scroll-snap-type: x var(--tw-scroll-snap-strictness);
 }
 
 .snap-y {
-  scroll-snap-type: y var(--tw-scroll-snap-strictness);
+  -ms-scroll-snap-type: y var(--tw-scroll-snap-strictness);
+      scroll-snap-type: y var(--tw-scroll-snap-strictness);
 }
 
 .snap-both {
-  scroll-snap-type: both var(--tw-scroll-snap-strictness);
+  -ms-scroll-snap-type: both var(--tw-scroll-snap-strictness);
+      scroll-snap-type: both var(--tw-scroll-snap-strictness);
 }
 
 .snap-mandatory {
@@ -9461,15 +9879,18 @@ details.collapse summary::-webkit-details-marker {
 }
 
 .overscroll-auto {
-  overscroll-behavior: auto;
+  -ms-scroll-chaining: chained;
+      overscroll-behavior: auto;
 }
 
 .overscroll-contain {
-  overscroll-behavior: contain;
+  -ms-scroll-chaining: none;
+      overscroll-behavior: contain;
 }
 
 .overscroll-none {
-  overscroll-behavior: none;
+  -ms-scroll-chaining: none;
+      overscroll-behavior: none;
 }
 
 .overscroll-y-auto {
@@ -9524,16 +9945,19 @@ details.collapse summary::-webkit-details-marker {
 
 .hyphens-none {
   -webkit-hyphens: none;
+      -ms-hyphens: none;
           hyphens: none;
 }
 
 .hyphens-manual {
   -webkit-hyphens: manual;
+      -ms-hyphens: manual;
           hyphens: manual;
 }
 
 .hyphens-auto {
   -webkit-hyphens: auto;
+      -ms-hyphens: auto;
           hyphens: auto;
 }
 
@@ -9914,6 +10338,14 @@ details.collapse summary::-webkit-details-marker {
   padding-right: 0.25rem;
 }
 
+.pr-3 {
+  padding-right: 0.75rem;
+}
+
+.pr-5 {
+  padding-right: 1.25rem;
+}
+
 .text-left {
   text-align: left;
 }
@@ -10081,39 +10513,48 @@ details.collapse summary::-webkit-details-marker {
 }
 
 .underline {
-  text-decoration-line: underline;
+  -webkit-text-decoration-line: underline;
+          text-decoration-line: underline;
 }
 
 .overline {
-  text-decoration-line: overline;
+  -webkit-text-decoration-line: overline;
+          text-decoration-line: overline;
 }
 
 .line-through {
-  text-decoration-line: line-through;
+  -webkit-text-decoration-line: line-through;
+          text-decoration-line: line-through;
 }
 
 .no-underline {
-  text-decoration-line: none;
+  -webkit-text-decoration-line: none;
+          text-decoration-line: none;
 }
 
 .decoration-solid {
-  text-decoration-style: solid;
+  -webkit-text-decoration-style: solid;
+          text-decoration-style: solid;
 }
 
 .decoration-double {
-  text-decoration-style: double;
+  -webkit-text-decoration-style: double;
+          text-decoration-style: double;
 }
 
 .decoration-dotted {
-  text-decoration-style: dotted;
+  -webkit-text-decoration-style: dotted;
+          text-decoration-style: dotted;
 }
 
 .decoration-dashed {
-  text-decoration-style: dashed;
+  -webkit-text-decoration-style: dashed;
+          text-decoration-style: dashed;
 }
 
 .decoration-wavy {
-  text-decoration-style: wavy;
+  -webkit-text-decoration-style: wavy;
+          text-decoration-style: wavy;
 }
 
 .antialiased {
@@ -10389,9 +10830,9 @@ details.collapse summary::-webkit-details-marker {
 }
 
 .transition {
-  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, -webkit-backdrop-filter;
+  transition-property: color, background-color, border-color, fill, stroke, opacity, box-shadow, transform, filter, -webkit-text-decoration-color, -webkit-backdrop-filter;
   transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter;
-  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter, -webkit-backdrop-filter;
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter, -webkit-text-decoration-color, -webkit-backdrop-filter;
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
   transition-duration: 150ms;
 }
@@ -10503,10 +10944,12 @@ details.collapse summary::-webkit-details-marker {
   .lg\:drawer-open > .drawer-toggle ~ .drawer-side {
     pointer-events: auto;
     visibility: visible;
+    position: -webkit-sticky;
     position: sticky;
     display: block;
     width: auto;
-    overscroll-behavior: auto;
+    -ms-scroll-chaining: chained;
+        overscroll-behavior: auto;
   }
 
   .lg\:drawer-open > .drawer-toggle ~ .drawer-side > *:not(.drawer-overlay) {
@@ -10551,14 +10994,14 @@ details.collapse summary::-webkit-details-marker {
   color: rgb(156 163 175 / var(--tw-text-opacity));
 }
 
-.placeholder\:text-gray-400::placeholder {
+.placeholder\:text-gray-400:-ms-input-placeholder {
   --tw-text-opacity: 1;
   color: rgb(156 163 175 / var(--tw-text-opacity));
 }
 
-.hover\:bg-gray-700:hover {
-  --tw-bg-opacity: 1;
-  background-color: rgb(55 65 81 / var(--tw-bg-opacity));
+.placeholder\:text-gray-400::placeholder {
+  --tw-text-opacity: 1;
+  color: rgb(156 163 175 / var(--tw-text-opacity));
 }
 
 .hover\:font-bold:hover {
@@ -10599,7 +11042,8 @@ details.collapse summary::-webkit-details-marker {
   }
 
   .sm\:underline {
-    text-decoration-line: underline;
+    -webkit-text-decoration-line: underline;
+            text-decoration-line: underline;
   }
 }
 

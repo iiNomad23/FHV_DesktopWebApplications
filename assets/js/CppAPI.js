@@ -122,9 +122,9 @@ class CppAPI {
         return 0;
     }
 
-    static getAllPresets(todayDate = new Date()) {
+    static getAllPresets() {
         try {
-            let jsonStr = GetAllPresets()();
+            let jsonStr = GetAllPresets();
 
             return JSON.parse(jsonStr);
         } catch (e) {
