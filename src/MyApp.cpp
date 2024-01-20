@@ -507,6 +507,9 @@ JSValue MyApp::GetTasksByDate(const ultralight::JSObject &thisObject, const ultr
     cout << result << endl;
     string resultString = result.dump();
     cout << "end" << endl;
+    if(resultString.c_str() == NULL){
+        return 0;
+    }
     return resultString.c_str();
 }
 
@@ -606,7 +609,7 @@ JSValue MyApp::SavePreset(const ultralight::JSObject &thisObject, const ultralig
     // write to db
     sqlite3 *db;
     int rc = sqlite3_open("TimeTracker.db", &db);
-
+    CreatePresetsTableIfNotExist(db);
     if (rc) {
         fprintf(stderr, "Can't open database: %s\n", sqlite3_errmsg(db));
         return (0);
@@ -856,7 +859,7 @@ int MyApp::CreateTasksTableIfNotExist(sqlite3 *db){
 }
 
 int CreatePresetsTableIfNotExist(sqlite3 *db){
-
+    cout << "Create Presets Table If Not Exist called" << endl;
     const char *createDBSql = "CREATE TABLE IF NOT EXISTS tasks(id INTEGER PRIMARY KEY AUTOINCREMENT, taskName TEXT, date TEXT, startTime TEXT, endTime TEXT, comment TEXT)";
 
     sqlite3_stmt *createDBStatement;
