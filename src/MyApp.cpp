@@ -6,6 +6,7 @@
 #include "Encdec.h"
 #include "Task.h"
 #include "json.hpp"
+#include "DatabaseHelper.h"
 
 #define WINDOW_WIDTH  1024
 #define WINDOW_HEIGHT 768
@@ -16,7 +17,6 @@ using json = nlohmann::json;
 void printJSValue(JSContextRef ctx, JSValueRef value);
 
 void PrintJSObject(JSContextRef ctx, JSObjectRef object);
-int CreatePresetsTableIfNotExist(sqlite3 *db);
 int GetMostRecentTaskId();
 void to_json(json &j, const Task &task);
 
@@ -213,8 +213,8 @@ JSValue MyApp::SaveTask(const ultralight::JSObject &thisObject, const ultralight
         fprintf(stderr, "Can't open database: %s\n", sqlite3_errmsg(db));
         return (0);
     }
-
-    if(!CreateTasksTableIfNotExist(db)){
+    DatabaseHelper databaseHelper;
+    if(!databaseHelper.CreateTasksTableIfNotExist(db)){
         cout << "error creating table" << endl;
         return 0;
     }
@@ -292,24 +292,11 @@ JSValue MyApp::DeleteTaskById(const ultralight::JSObject &thisObject, const ultr
         fprintf(stderr, "Can't open database: %s\n", sqlite3_errmsg(db));
         return (0);
     }
-
-    const char *createDBSql = "CREATE TABLE IF NOT EXISTS tasks(id INTEGER PRIMARY KEY AUTOINCREMENT, taskName TEXT, date TEXT, startTime TEXT, endTime TEXT, comment TEXT)";
-
-    sqlite3_stmt *createDBStatement;
-    rc = sqlite3_prepare_v2(db, createDBSql, -1, &createDBStatement, nullptr);
-
-    if (rc != SQLITE_OK) {
-        cout << "error preparing sql statement" << endl;
+    DatabaseHelper databaseHelper;
+    if(!databaseHelper.CreateTasksTableIfNotExist(db)){
+        cout << "error creating table" << endl;
         return 0;
     }
-
-    rc = sqlite3_step(createDBStatement);
-    if (rc != SQLITE_DONE) {
-        cout << "error executing sql statement" << endl;
-        return 0;
-    }
-
-    sqlite3_finalize(createDBStatement);
 
     const char *sql = "DELETE FROM tasks WHERE id = ?";
 
@@ -367,23 +354,11 @@ JSValue MyApp::UpdateTask(const ultralight::JSObject &thisObject, const ultralig
         return (0);
     }
 
-    const char *createDBSql = "CREATE TABLE IF NOT EXISTS tasks(id INTEGER PRIMARY KEY AUTOINCREMENT, taskName TEXT, date TEXT, startTime TEXT, endTime TEXT, comment TEXT)";
-
-    sqlite3_stmt *createDBStatement;
-    rc = sqlite3_prepare_v2(db, createDBSql, -1, &createDBStatement, nullptr);
-
-    if (rc != SQLITE_OK) {
-        cout << "create table error preparing sql statement" << endl;
+    DatabaseHelper databaseHelper;
+    if(!databaseHelper.CreateTasksTableIfNotExist(db)){
+        cout << "error creating table" << endl;
         return 0;
     }
-
-    rc = sqlite3_step(createDBStatement);
-    if (rc != SQLITE_DONE) {
-        cout << "create table error executing sql statement" << endl;
-        return 0;
-    }
-
-    sqlite3_finalize(createDBStatement);
 
     const char *sql = "UPDATE tasks "
                       "SET taskName = ?,"
@@ -446,11 +421,11 @@ JSValue MyApp::GetTasksByDate(const ultralight::JSObject &thisObject, const ultr
         return (0);
     }
 
-    if(!CreateTasksTableIfNotExist(db)){
+    DatabaseHelper databaseHelper;
+    if(!databaseHelper.CreateTasksTableIfNotExist(db)){
         cout << "error creating table" << endl;
         return 0;
     }
-
 
     const char *sql = "SELECT * FROM tasks WHERE date = ?";
 
@@ -529,7 +504,8 @@ JSValue MyApp::GetTaskById(const ultralight::JSObject &thisObject, const ultrali
         return (0);
     }
 
-    if(!CreateTasksTableIfNotExist(db)){
+    DatabaseHelper databaseHelper;
+    if(!databaseHelper.CreateTasksTableIfNotExist(db)){
         cout << "error creating table" << endl;
         return 0;
     }
@@ -612,11 +588,11 @@ JSValue MyApp::SavePreset(const ultralight::JSObject &thisObject, const ultralig
         return (0);
     }
 
-    if(!CreatePresetsTableIfNotExist(db)){
+    DatabaseHelper databaseHelper;
+    if(!databaseHelper.CreatePresetsTableIfNotExist(db)){
         cout << "error creating table" << endl;
         return 0;
     }
-
 
     const char *sql = "INSERT INTO presets(name) VALUES (?)";
 
@@ -658,7 +634,8 @@ JSValue MyApp::GetAllPresets(const ultralight::JSObject &thisObject, const ultra
     }
 
 
-    if(!CreatePresetsTableIfNotExist(db)){
+    DatabaseHelper databaseHelper;
+    if(!databaseHelper.CreatePresetsTableIfNotExist(db)){
         cout << "error creating table" << endl;
         return 0;
     }
@@ -729,7 +706,8 @@ JSValue MyApp::DeletePreset(const ultralight::JSObject &thisObject, const ultral
         return (0);
     }
 
-    if(!CreatePresetsTableIfNotExist(db)){
+    DatabaseHelper databaseHelper;
+    if(!databaseHelper.CreatePresetsTableIfNotExist(db)){
         cout << "error creating table" << endl;
         return 0;
     }
@@ -832,48 +810,48 @@ string GetValueOfProperty(JSContextRef ctx, JSObjectRef object, const char *name
     return result;
 }
 
-int MyApp::CreateTasksTableIfNotExist(sqlite3 *db){
-
-    const char *createDBSql = "CREATE TABLE IF NOT EXISTS tasks(id INTEGER PRIMARY KEY AUTOINCREMENT, taskName TEXT, date TEXT, startTime TEXT, endTime TEXT, comment TEXT)";
-
-    sqlite3_stmt *createDBStatement;
-    int rc = sqlite3_prepare_v2(db, createDBSql, -1, &createDBStatement, nullptr);
-
-    if (rc != SQLITE_OK) {
-        cout << "error preparing sql statement" << endl;
-        return 0;
-    }
-
-    rc = sqlite3_step(createDBStatement);
-    if (rc != SQLITE_DONE) {
-        cout << "error executing sql statement" << endl;
-        return 0;
-    }
-
-    sqlite3_finalize(createDBStatement);
-
-    return 1;
-}
-
-int CreatePresetsTableIfNotExist(sqlite3 *db){
-    cout << "Create Presets Table If Not Exist called" << endl;
-    const char *createDBSql = "CREATE TABLE IF NOT EXISTS presets(name TEXT PRIMARY KEY)";
-
-    sqlite3_stmt *createDBStatement;
-    int rc = sqlite3_prepare_v2(db, createDBSql, -1, &createDBStatement, nullptr);
-
-    if (rc != SQLITE_OK) {
-        cout << "error preparing sql statement" << endl;
-        return 0;
-    }
-
-    rc = sqlite3_step(createDBStatement);
-    if (rc != SQLITE_DONE) {
-        cout << "error executing sql statement" << endl;
-        return 0;
-    }
-
-    sqlite3_finalize(createDBStatement);
-    cout << "Create Presets Table If Not Exist completed" << endl;
-    return 1;
-}
+//int MyApp::CreateTasksTableIfNotExist(sqlite3 *db){
+//
+//    const char *createDBSql = "CREATE TABLE IF NOT EXISTS tasks(id INTEGER PRIMARY KEY AUTOINCREMENT, taskName TEXT, date TEXT, startTime TEXT, endTime TEXT, comment TEXT)";
+//
+//    sqlite3_stmt *createDBStatement;
+//    int rc = sqlite3_prepare_v2(db, createDBSql, -1, &createDBStatement, nullptr);
+//
+//    if (rc != SQLITE_OK) {
+//        cout << "error preparing sql statement" << endl;
+//        return 0;
+//    }
+//
+//    rc = sqlite3_step(createDBStatement);
+//    if (rc != SQLITE_DONE) {
+//        cout << "error executing sql statement" << endl;
+//        return 0;
+//    }
+//
+//    sqlite3_finalize(createDBStatement);
+//
+//    return 1;
+//}
+//
+//int CreatePresetsTableIfNotExist(sqlite3 *db){
+//    cout << "Create Presets Table If Not Exist called" << endl;
+//    const char *createDBSql = "CREATE TABLE IF NOT EXISTS presets(name TEXT PRIMARY KEY)";
+//
+//    sqlite3_stmt *createDBStatement;
+//    int rc = sqlite3_prepare_v2(db, createDBSql, -1, &createDBStatement, nullptr);
+//
+//    if (rc != SQLITE_OK) {
+//        cout << "error preparing sql statement" << endl;
+//        return 0;
+//    }
+//
+//    rc = sqlite3_step(createDBStatement);
+//    if (rc != SQLITE_DONE) {
+//        cout << "error executing sql statement" << endl;
+//        return 0;
+//    }
+//
+//    sqlite3_finalize(createDBStatement);
+//    cout << "Create Presets Table If Not Exist completed" << endl;
+//    return 1;
+//}

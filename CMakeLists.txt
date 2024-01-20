@@ -30,12 +30,17 @@ set(APP_SOURCES
 # Test Source Files
 set(TEST_SOURCES
         "src/hello_test.cc"
+        "src/DatabaseHelper.h"
+        "src/DatabaseHelper.cpp"
+        "src/libraries/sqlite/sqlite3.h"
+        "src/libraries/sqlite/sqlite3.c"
         # Include other test files here
 )
 
 # Test Executable
 add_executable(hello_test ${TEST_SOURCES} "src/Encdec.cpp")
 target_link_libraries(hello_test GTest::gtest_main)
+#target_link_libraries(hello_test sqlite3)
 include(GoogleTest)
 gtest_discover_tests(hello_test)
 

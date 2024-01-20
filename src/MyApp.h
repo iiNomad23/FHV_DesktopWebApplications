@@ -32,8 +32,6 @@ public:
 
     void CppConsoleLog(const JSObject &thisObject, const JSArgs &args);
 
-    int CreateTasksTableIfNotExist(sqlite3 *db);
-
     // Start the run loop.
     virtual void Run();
 
