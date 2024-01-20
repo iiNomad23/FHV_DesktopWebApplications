@@ -198,15 +198,21 @@ function setEvents() {
         let invalidFieldExist = false;
         for (const [key, valueObj] of Object.entries(validationObject)) {
             let isValidValue = false;
+
             if (valueObj.value != null && valueObj.value !== "") {
-                if (key === "startTime" || key === "endTime") {
-                    if (valueObj.value < validationObject.endTime.value) {
+                switch (key) {
+                    case "startTime":
+                        isValidValue = valueObj.value < validationObject.endTime.value;
+                        break;
+                    case "endTime":
+                        isValidValue = valueObj.value > validationObject.startTime.value;
+                        break;
+                    case "date":
+                        let dateRegex = /^\d{2}\.\d{2}\.\d{4}$/;
+                        isValidValue = dateRegex.test(valueObj.value);
+                        break;
+                    default:
                         isValidValue = true;
-                    } else if (valueObj.value > validationObject.startTime.value) {
-                        isValidValue = true;
-                    }
-                } else {
-                    isValidValue = true;
                 }
             }
 
@@ -259,8 +265,10 @@ function setEvents() {
             if (taskId > 0) {
                 closeModal();
 
-                task["id"] = taskId;
-                insertTasksIntoTable([task]);
+                if (validationObject.date.value === formatDate(new Date())) {
+                    task["id"] = taskId;
+                    insertTasksIntoTable([task]);
+                }
             } else {
                 CppAPI.consoleLog("[root] Error at saving task!");
             }
