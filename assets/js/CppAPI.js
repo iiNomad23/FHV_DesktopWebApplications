@@ -35,7 +35,9 @@ class CppAPI {
 
         try {
             let jsonStr = GetTaskById(taskId);
-            return JSON.parse(jsonStr);
+            if (jsonStr && jsonStr !== "null") {
+                return JSON.parse(jsonStr);
+            }
         } catch (e) {
             CppAPI.consoleLog("[CppAPI] ultralight binding error - function 'GetTasksById'");
         }
@@ -127,8 +129,9 @@ class CppAPI {
     static getAllPresets() {
         try {
             let jsonStr = GetAllPresets();
-
-            return JSON.parse(jsonStr);
+            if (jsonStr && jsonStr !== "null") {
+                return JSON.parse(jsonStr);
+            }
         } catch (e) {
             CppAPI.consoleLog("[CppAPI] ultralight binding error - function 'GetAllPresets'");
         }

@@ -7,6 +7,7 @@
     <script src="./js/presets.js"></script>
 </head>
 <body class="overflow-hidden">
+
 <div class="navbar bg-base-100">
     <div class="flex-none">
         <label for="my-drawer-2" class="btn btn-square btn-ghost lg:hidden">
@@ -16,11 +17,12 @@
                       d="M4 6h16M4 12h16M4 18h16"></path>
             </svg>
         </label>
-
     </div>
+
     <div class="flex-1">
         <a class="btn btn-ghost text-xl">MargopsTimeTracker</a>
     </div>
+
     <div class="flex-none">
         <button class="btn btn-square btn-ghost">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
@@ -31,6 +33,7 @@
         </button>
     </div>
 </div>
+
 <div class="drawer lg:drawer-open">
     <input id="my-drawer-2" type="checkbox" class="drawer-toggle"/>
     <div class="drawer-content flex flex-col items-start">
@@ -43,11 +46,15 @@
                         <button id="add-preset-button" class="btn btn-primary btn-sm">Add</button>
                     </div>
                 </div>
-                <label>Presets</label>
-                <div class="overflow-x-auto max-h-[450px] overflow-visible">
 
-                    <table id="presets-table" class="table w-full ">
-                        <!-- head -->
+                <div class="overflow-x-auto max-h-[450px] overflow-visible">
+                    <table id="presets-table" class="table w-full">
+                        <colgroup>
+                            <col style="width: 0">
+                            <col style="width: 80%">
+                            <col style="width: 20%">
+                        </colgroup>
+
                         <thead>
                         <tr>
                             <th></th>
@@ -55,30 +62,24 @@
                             <th></th>
                         </tr>
                         </thead>
-                        <tbody>
-                        <!-- row 1 -->
 
-                        <!-- row 2 -->
+                        <tbody>
                         </tbody>
                     </table>
                 </div>
             </div>
         </div>
-        <!-- Page content here -->
-        <!--      <label for="my-drawer-2" class="btn btn-primary drawer-button lg:hidden">Open drawer</label>-->
-
-
     </div>
+
     <div class="drawer-side">
         <label for="my-drawer-2" aria-label="close sidebar" class="drawer-overlay"></label>
         <ul class="menu p-4 w-80 min-h-full bg-base-200 text-base-content">
             <!-- Sidebar content here -->
-            <li class="m-2"><a href="./app.html">Task Overview</a></li>
+            <li class="m-2"><a href="./taskOverview.html">Task Overview</a></li>
             <li class="m-2"><a href="./presets.html">Presets</a></li>
         </ul>
     </div>
 </div>
-
 
 </body>
 </html>

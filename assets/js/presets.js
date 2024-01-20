@@ -1,14 +1,13 @@
 window.onload = () => {
-
-    document.getElementById("add-preset-button").addEventListener("click", function (){
+    document.getElementById("add-preset-button").addEventListener("click", function () {
         let preset = document.getElementById("add-preset-input").value;
-        if(CppAPI.savePreset(preset)){
-            insertPresetIntoTable([{"preset":preset}]);
+        if (CppAPI.savePreset(preset)) {
+            insertPresetIntoTable([{"preset": preset}]);
         } else {
             CppAPI.consoleLog("Preset already exists");
         }
-
     });
+
     let presets = CppAPI.getAllPresets();
     insertPresetIntoTable(presets);
 }
@@ -23,7 +22,7 @@ function insertPresetIntoTable(presets = []) {
         if (preset == null) {
             continue;
         }
-        CppAPI.consoleLog(JSON.stringify(preset));
+
         presetsTableBody[0].innerHTML += `<tr id="${"row_" + preset}" class="hover">
                             <td></td>
                             <td>${preset}</td>
@@ -32,7 +31,7 @@ function insertPresetIntoTable(presets = []) {
     }
 
     let deleteBtnEls = document.querySelectorAll('[id^="delete_"]');
-    deleteBtnEls.forEach(function(deleteBtnEl) {
+    deleteBtnEls.forEach(function (deleteBtnEl) {
         deleteBtnEl.addEventListener("click", function (e) {
             CppAPI.consoleLog("delete button clicked");
             let preset = e.currentTarget.getAttribute('data-preset');

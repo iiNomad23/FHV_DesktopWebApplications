@@ -1,5 +1,3 @@
-//TODO: format times and fix dates in all datepickers
-
 window.onload = () => {
     CppAPI.consoleLog("Welcome to our TimeTracker frontend");
 
@@ -18,7 +16,11 @@ window.onload = () => {
 
 function insertTasksIntoTable(tasks = []) {
     let tasksTable = document.getElementById("tasks-table");
-    if (tasksTable == null && tasks.length > 0) {
+    if (tasksTable == null) {
+        if (tasks.length <= 0) {
+            return;
+        }
+
         document.getElementById("taskTableContainer").innerHTML = createTableHTML(true);
     }
 
@@ -118,6 +120,8 @@ function openModal(task) {
         return; // :(
     }
 
+    addDataListOptions(CppAPI.getAllPresets());
+
     if (task != null) {
         tagEl.textContent = "Edit Task";
         tagEl.setAttribute('data-taskId', task.id);
@@ -146,6 +150,20 @@ function closeModal() {
     createTaskModalEl.classList.add("hidden");
 }
 
+function addDataListOptions(options = []) {
+    let taskNameSelectEl = document.getElementById("task-name-select");
+    taskNameSelectEl.innerHTML = "";
+
+    options.unshift({"preset": "-"});
+
+    for (let i = 0; i < options.length; i++) {
+        let option = document.createElement("option");
+        option.value = options[i].preset;
+        option.textContent  = options[i].preset;
+        taskNameSelectEl.appendChild(option);
+    }
+}
+
 function setEvents() {
     document.getElementById("create-task-button").addEventListener("click", function () {
         openModal();
@@ -156,6 +174,15 @@ function setEvents() {
         document.getElementById("taskTableContainer").innerHTML = createTableHTML(tasks.length > 0);
 
         insertTasksIntoTable(tasks);
+    });
+
+    document.getElementById("task-name-select").addEventListener("change", function () {
+        let value = this.value;
+        if (value == null || value === "-") {
+            value = "";
+        }
+
+        document.getElementById("task-name-input").value = value;
     });
 
     document.getElementById("save-task-modal-button").addEventListener("click", function (event) {
@@ -314,7 +341,14 @@ function getEditAndDeleteButtonHTML(taskId) {
 function createTableHTML(tasksExist) {
     if (tasksExist) {
         return `<table id="tasks-table" class="table w-full">
-                    <!-- head -->
+                    <colgroup>
+                        <col style="width: 0">
+                        <col style="width: 40%">
+                        <col style="width: 20%">
+                        <col style="width: 20%">
+                        <col style="width: 20%">
+                    </colgroup>
+                    
                     <thead>
                     <tr>
                         <th></th>
@@ -324,6 +358,7 @@ function createTableHTML(tasksExist) {
                         <th></th>
                     </tr>
                     </thead>
+                    
                     <tbody>
                     </tbody>
                 </table>`;
