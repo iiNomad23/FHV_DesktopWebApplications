@@ -13,7 +13,9 @@ class CppAPI {
                 date: todayDate,
             });
 
-            return JSON.parse(jsonStr);
+            if (jsonStr && jsonStr !== "null") {
+                return JSON.parse(jsonStr);
+            }
         } catch (e) {
             CppAPI.consoleLog("[CppAPI] ultralight binding error - function 'GetTasksByDate'");
         }
@@ -128,7 +130,7 @@ class CppAPI {
 
             return JSON.parse(jsonStr);
         } catch (e) {
-            CppAPI.consoleLog("[CppAPI] ultralight binding error - function 'getAllPresets'");
+            CppAPI.consoleLog("[CppAPI] ultralight binding error - function 'GetAllPresets'");
         }
 
         return [];
