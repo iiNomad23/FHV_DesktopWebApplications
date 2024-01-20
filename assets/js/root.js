@@ -11,10 +11,17 @@ window.onload = () => {
     setEvents();
 
     let tasks = CppAPI.getTasksByDate(todayDate);
+    document.getElementById("taskTableContainer").innerHTML = createTableHTML(tasks.length > 0);
+
     insertTasksIntoTable(tasks);
 }
 
 function insertTasksIntoTable(tasks = []) {
+    let tasksTable = document.getElementById("tasks-table");
+    if (tasksTable == null && tasks.length > 0) {
+        document.getElementById("taskTableContainer").innerHTML = createTableHTML(true);
+    }
+
     let tasksTableBody = document
         .getElementById("tasks-table")
         .getElementsByTagName("tbody");
@@ -54,6 +61,12 @@ function insertTasksIntoTable(tasks = []) {
             let taskId = e.currentTarget.getAttribute('data-taskId');
             if (CppAPI.deleteTaskById(taskId)) {
                 removeTableRow(taskId);
+
+                let tableEl = document.getElementById("tasks-table");
+                let tbodyRowCount = tableEl.tBodies[0].rows.length;
+                if (tbodyRowCount <= 0) {
+                    document.getElementById("taskTableContainer").innerHTML = createTableHTML(false);
+                }
             }
         });
     });
@@ -67,50 +80,6 @@ function removeTableRow(taskId) {
     }
 
     rowEl.remove();
-}
-
-function convertMinutesIntoTimeFormat(minutes = "0") {
-    minutes = parseInt(minutes);
-
-    let hours = Math.floor(minutes / 60);
-    if (hours < 10) {
-        hours += "0";
-    }
-
-    let currentMinutes = minutes % 60;
-    if (currentMinutes < 10) {
-        currentMinutes += "0";
-    }
-
-    return hours + ":" + currentMinutes;
-}
-
-function formatDate(date) {
-    const day = date.getDate();
-    const month = date.getMonth() + 1; // getMonth() returns 0-11
-    const year = date.getFullYear();
-
-    // Add leading zero to day and month if needed
-    const formattedDay = day < 10 ? '0' + day : day;
-    const formattedMonth = month < 10 ? '0' + month : month;
-
-    return `${formattedDay}.${formattedMonth}.${year}`;
-}
-
-function convertTime(time) {
-    if (time == null) {
-        return null;
-    }
-    let timeArray = time.split(":");
-    if (timeArray.length <= 1) {
-        return null;
-    }
-
-    time = parseInt(timeArray[0]) * 60 + parseInt(timeArray[1]);
-    if (isNaN(time)) {
-        return null;
-    }
-    return time;
 }
 
 function clearTaskModal(clearValues = true) {
@@ -183,13 +152,9 @@ function setEvents() {
     });
 
     document.getElementById("search-button").addEventListener("click", function (){
-        let tasksTableBody = document
-            .getElementById("tasks-table")
-            .getElementsByTagName("tbody")[0];
-
-        tasksTableBody.innerHTML = "";
-
         let tasks = CppAPI.getTasksByDate(document.getElementById("date-picker").value);
+        document.getElementById("taskTableContainer").innerHTML = createTableHTML(tasks.length > 0);
+
         insertTasksIntoTable(tasks);
     });
 
@@ -233,15 +198,21 @@ function setEvents() {
         let invalidFieldExist = false;
         for (const [key, valueObj] of Object.entries(validationObject)) {
             let isValidValue = false;
+
             if (valueObj.value != null && valueObj.value !== "") {
-                if (key === "startTime" || key === "endTime") {
-                    if (valueObj.value < validationObject.endTime.value) {
+                switch (key) {
+                    case "startTime":
+                        isValidValue = valueObj.value < validationObject.endTime.value;
+                        break;
+                    case "endTime":
+                        isValidValue = valueObj.value > validationObject.startTime.value;
+                        break;
+                    case "date":
+                        let dateRegex = /^\d{2}\.\d{2}\.\d{4}$/;
+                        isValidValue = dateRegex.test(valueObj.value);
+                        break;
+                    default:
                         isValidValue = true;
-                    } else if (valueObj.value > validationObject.startTime.value) {
-                        isValidValue = true;
-                    }
-                } else {
-                    isValidValue = true;
                 }
             }
 
@@ -294,8 +265,10 @@ function setEvents() {
             if (taskId > 0) {
                 closeModal();
 
-                task["id"] = taskId;
-                insertTasksIntoTable([task]);
+                if (validationObject.date.value === formatDate(new Date())) {
+                    task["id"] = taskId;
+                    insertTasksIntoTable([task]);
+                }
             } else {
                 CppAPI.consoleLog("[root] Error at saving task!");
             }
@@ -305,12 +278,6 @@ function setEvents() {
     document.getElementById("close-task-modal-button").addEventListener("click", function (event) {
         event.preventDefault();
         closeModal();
-    });
-
-    // for testing purposes
-    document.getElementById("test-button").addEventListener("click", function () {
-        let tasks = CppAPI.getTasksByDate("12.07.2020");
-        insertTasksIntoTable(tasks);
     });
 }
 
@@ -342,4 +309,25 @@ function getEditAndDeleteButtonHTML(taskId) {
                     </svg>
                 </button>
             </div>`;
+}
+
+function createTableHTML(tasksExist) {
+    if (tasksExist) {
+        return `<table id="tasks-table" class="table w-full">
+                    <!-- head -->
+                    <thead>
+                    <tr>
+                        <th></th>
+                        <th>Task Name</th>
+                        <th>Start Time</th>
+                        <th>End Time</th>
+                        <th></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>`;
+    } else {
+        return `<p>No completed tasks today</p>`;
+    }
 }
