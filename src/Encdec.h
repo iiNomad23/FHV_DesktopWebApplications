@@ -8,8 +8,6 @@
 #include <fstream>
 using namespace std;
 
-// Encdec class with encrypt() and
-// decrypt() member functions
 class Encdec {
     int key;
     int s = 1;
