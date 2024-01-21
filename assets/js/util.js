@@ -3,12 +3,12 @@ function convertMinutesIntoTimeFormat(minutes = "0") {
 
     let hours = Math.floor(minutes / 60);
     if (hours < 10) {
-        hours += "0";
+        hours = "0" + hours;
     }
 
     let currentMinutes = minutes % 60;
     if (currentMinutes < 10) {
-        currentMinutes += "0";
+        currentMinutes = "0" + currentMinutes;
     }
 
     return hours + ":" + currentMinutes;

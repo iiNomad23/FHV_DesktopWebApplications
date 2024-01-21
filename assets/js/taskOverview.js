@@ -9,7 +9,7 @@ window.onload = () => {
     setEvents();
 
     let tasks = CppAPI.getTasksByDate(todayDate);
-    document.getElementById("taskTableContainer").innerHTML = createTableHTML(tasks.length > 0);
+    document.getElementById("taskTableContainer").innerHTML = createTaskTableHTML(tasks.length > 0);
 
     insertTasksIntoTable(tasks);
 }
@@ -21,7 +21,7 @@ function insertTasksIntoTable(tasks = []) {
             return;
         }
 
-        document.getElementById("taskTableContainer").innerHTML = createTableHTML(true);
+        document.getElementById("taskTableContainer").innerHTML = createTaskTableHTML(true);
     }
 
     let tasksTableBody = document
@@ -67,7 +67,7 @@ function insertTasksIntoTable(tasks = []) {
                 let tableEl = document.getElementById("tasks-table");
                 let tbodyRowCount = tableEl.tBodies[0].rows.length;
                 if (tbodyRowCount <= 0) {
-                    document.getElementById("taskTableContainer").innerHTML = createTableHTML(false);
+                    document.getElementById("taskTableContainer").innerHTML = createTaskTableHTML(false);
                 }
             }
         });
@@ -77,7 +77,7 @@ function insertTasksIntoTable(tasks = []) {
 function removeTableRow(taskId) {
     let rowEl = document.getElementById("row_" + taskId);
     if (rowEl == null) {
-        CppAPI.consoleLog("[root] Error removing table row!");
+        CppAPI.consoleLog("[root] Error removing task table row!");
         return; // :(
     }
 
@@ -173,7 +173,7 @@ function setEvents() {
 
     document.getElementById("search-button").addEventListener("click", function () {
         let tasks = CppAPI.getTasksByDate(document.getElementById("date-picker").value);
-        document.getElementById("taskTableContainer").innerHTML = createTableHTML(tasks.length > 0);
+        document.getElementById("taskTableContainer").innerHTML = createTaskTableHTML(tasks.length > 0);
 
         insertTasksIntoTable(tasks);
     });
@@ -342,7 +342,7 @@ function getEditAndDeleteButtonHTML(taskId) {
             </div>`;
 }
 
-function createTableHTML(tasksExist) {
+function createTaskTableHTML(tasksExist) {
     if (tasksExist) {
         return `<table id="tasks-table" class="table w-full">
                     <colgroup>
@@ -381,5 +381,5 @@ function createSelectBoxHTML(options) {
     return `<label for="task-name-select"></label>
             <select id="task-name-select" class="ring-1 ring-inset ring-gray-300" style="width: 20px;">
                 ${optionsHTML}
-            </select>`
+            </select>`;
 }

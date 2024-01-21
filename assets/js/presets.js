@@ -1,7 +1,10 @@
 window.onload = () => {
     document.getElementById("add-preset-button").addEventListener("click", function () {
-        let preset = document.getElementById("add-preset-input").value;
+        let presetInputEl = document.getElementById("add-preset-input");
+        let preset = presetInputEl.value;
+
         if (CppAPI.savePreset(preset)) {
+            presetInputEl.value = "";
             insertPresetIntoTable([{"preset": preset}]);
         } else {
             CppAPI.consoleLog("Preset already exists");
@@ -9,10 +12,21 @@ window.onload = () => {
     });
 
     let presets = CppAPI.getAllPresets();
+    document.getElementById("presetTableContainer").innerHTML = createPresetTableHTML(presets.length > 0);
+
     insertPresetIntoTable(presets);
 }
 
 function insertPresetIntoTable(presets = []) {
+    let presetsTable = document.getElementById("presets-table");
+    if (presetsTable == null) {
+        if (presets.length <= 0) {
+            return;
+        }
+
+        document.getElementById("presetTableContainer").innerHTML = createPresetTableHTML(true);
+    }
+
     let presetsTableBody = document
         .getElementById("presets-table")
         .getElementsByTagName("tbody");
@@ -37,6 +51,12 @@ function insertPresetIntoTable(presets = []) {
             let preset = e.currentTarget.getAttribute('data-preset');
             if (CppAPI.deletePreset(preset)) {
                 removeTableRow(preset);
+
+                let tableEl = document.getElementById("presets-table");
+                let tbodyRowCount = tableEl.tBodies[0].rows.length;
+                if (tbodyRowCount <= 0) {
+                    document.getElementById("presetTableContainer").innerHTML = createPresetTableHTML(false);
+                }
             }
         });
     });
@@ -45,7 +65,7 @@ function insertPresetIntoTable(presets = []) {
 function removeTableRow(taskId) {
     let rowEl = document.getElementById("row_" + taskId);
     if (rowEl == null) {
-        CppAPI.consoleLog("[root] Error removing table row!");
+        CppAPI.consoleLog("[root] Error removing preset table row!");
         return; // :(
     }
 
@@ -61,4 +81,29 @@ function getDeleteButtonHTML(preset) {
                     </svg>
                 </button>
             </div>`;
+}
+
+function createPresetTableHTML(presetExist) {
+    if (presetExist) {
+        return `<table id="presets-table" class="table w-full">
+                <colgroup>
+                    <col style="width: 0">
+                    <col style="width: 80%">
+                    <col style="width: 20%">
+                </colgroup>
+
+                <thead>
+                <tr>
+                    <th></th>
+                    <th>Name</th>
+                    <th></th>
+                </tr>
+                </thead>
+
+                <tbody>
+                </tbody>
+            </table>`;
+    } else {
+        return `<p>No presets exist</p>`;
+    }
 }
