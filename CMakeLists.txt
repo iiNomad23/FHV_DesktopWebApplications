@@ -31,7 +31,7 @@ set(APP_SOURCES
 
 # Test Source Files
 set(TEST_SOURCES
-        "src/hello_test.cc"
+        "src/tests.cc"
         "src/DatabaseHelper.h"
         "src/DatabaseHelper.cpp"
         "src/libraries/sqlite/sqlite3.h"
