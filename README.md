@@ -17,6 +17,15 @@ their documentation:
 
 # Other known issues
 
+The scaling of the `<select>` tag in the create task modal doesn't update properly.
+At first start everything seems fine but if we add elements to it the scaling gets weird, 
+this even happens when removing and creating the select element from scratch. 
+Interestingly, we also run into a segfault if this scaling issue occurs and we click around in the select element too much.
+We highly suspect it to be a general issue with ultralight as there have been previous issues on github describing problems with the `select` element.
+
 Some other features like Date Selection, Alerts and Dialogs are not supported by Ultralight yet\
 See: https://github.com/ultralight-ux/Ultralight/issues/178
 
+
+
+more on this in the presentation ;)
