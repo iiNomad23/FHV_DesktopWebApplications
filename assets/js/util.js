@@ -26,7 +26,7 @@ function formatDate(date) {
     return `${formattedDay}.${formattedMonth}.${year}`;
 }
 
-function convertTime(time) {
+function convertTimeToMinutesAsNumber(time) {
     if (time == null) {
         return null;
     }

@@ -193,9 +193,6 @@ function setEvents() {
         let endTime = endTimeInput.value;
         let comment = commentTextareaEl.value;
 
-        startTime = convertTime(startTime);
-        endTime = convertTime(endTime);
-
         let validationObject = {
             taskName: {
                 el: taskNameInputEl,
@@ -216,20 +213,39 @@ function setEvents() {
         };
 
         let invalidFieldExist = false;
-        for (const [key, valueObj] of Object.entries(validationObject)) {
+        for (const [key, validationObjectEntry] of Object.entries(validationObject)) {
             let isValidValue = false;
 
-            if (valueObj.value != null && valueObj.value !== "") {
+            if (validationObjectEntry.value != null && validationObjectEntry.value !== "") {
+                let timeRegex = /^(0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$/;
+
                 switch (key) {
                     case "startTime":
-                        isValidValue = valueObj.value < validationObject.endTime.value;
+                        isValidValue = timeRegex.test(validationObjectEntry.value);
+
+                        if (isValidValue) {
+                            let isEndTimeValid = timeRegex.test(validationObject.endTime.value);
+                            if (isEndTimeValid) {
+                                isValidValue = convertTimeToMinutesAsNumber(validationObjectEntry.value) < convertTimeToMinutesAsNumber(validationObject.endTime.value);
+                            }
+                        }
+
                         break;
                     case "endTime":
-                        isValidValue = valueObj.value > validationObject.startTime.value;
+                        isValidValue = timeRegex.test(validationObjectEntry.value);
+
+                        if (isValidValue) {
+                            let isStartTimeValid = timeRegex.test(validationObject.startTime.value);
+                            if (isStartTimeValid) {
+                                isValidValue = convertTimeToMinutesAsNumber(validationObjectEntry.value) > convertTimeToMinutesAsNumber(validationObject.startTime.value);
+                            }
+                        }
+
                         break;
                     case "date":
                         let dateRegex = /^\d{2}\.\d{2}\.\d{4}$/;
-                        isValidValue = dateRegex.test(valueObj.value);
+                        isValidValue = dateRegex.test(validationObjectEntry.value);
+
                         break;
                     default:
                         isValidValue = true;
@@ -237,9 +253,9 @@ function setEvents() {
             }
 
             if (isValidValue) {
-                valueObj.el.classList.remove("ring-rose-300");
+                validationObjectEntry.el.classList.remove("ring-rose-300");
             } else {
-                valueObj.el.classList.add("ring-rose-300");
+                validationObjectEntry.el.classList.add("ring-rose-300");
                 invalidFieldExist = true;
             }
         }
@@ -251,8 +267,8 @@ function setEvents() {
         let task = {
             taskName: taskName,
             date: date,
-            startTime: startTime,
-            endTime: endTime,
+            startTime: convertTimeToMinutesAsNumber(startTime),
+            endTime: convertTimeToMinutesAsNumber(endTime),
             comment: comment
         };
 
