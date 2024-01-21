@@ -14,9 +14,6 @@
 using namespace std;
 using json = nlohmann::json;
 
-void printJSValue(JSContextRef ctx, JSValueRef value);
-
-void PrintJSObject(JSContextRef ctx, JSObjectRef object);
 int GetMostRecentTaskId();
 void to_json(json &j, const Task &task);
 
@@ -181,9 +178,6 @@ void MyApp::OnChangeTitle(ultralight::View *caller,
 /// GetMessage(). We bind the callback within the DOMReady callback defined below.
 ///
 JSValue MyApp::SaveTask(const ultralight::JSObject &thisObject, const ultralight::JSArgs &args) {
-    ///
-    /// Return our message to JavaScript as a JSValue.
-    ///
 
     cout << "Called: SaveTask" << endl;
     cout << args.data() << endl;
@@ -247,8 +241,7 @@ JSValue MyApp::SaveTask(const ultralight::JSObject &thisObject, const ultralight
 
     int taskId = GetMostRecentTaskId();
 
-    fprintf(stderr, "successfully saved to database\n");
-
+    cout << "successfully saved to database" << endl;
     return taskId;
 }
 
@@ -279,7 +272,8 @@ int GetMostRecentTaskId(){
 }
 
 JSValue MyApp::DeleteTaskById(const ultralight::JSObject &thisObject, const ultralight::JSArgs &args) {
-    cout << "Called: DeleteTasksById" << endl;
+
+    cout << "Called: DeleteTaskById" << endl;
 
     if (args.size() != 1) {
         return 0;
@@ -319,14 +313,14 @@ JSValue MyApp::DeleteTaskById(const ultralight::JSObject &thisObject, const ultr
     sqlite3_finalize(stmt);
     sqlite3_close(db);
 
-    fprintf(stderr, "successfully deleted task\n");
-
+    cout << "successfully deleted task" << endl;
     return 1;
 
 }
 
 JSValue MyApp::UpdateTask(const ultralight::JSObject &thisObject, const ultralight::JSArgs &args) {
-    cout << "Called: UpdateTasksById" << endl;
+
+    cout << "Called: UpdateTask" << endl;
 
     if (args.size() != 1) {
         return 0;
@@ -401,6 +395,7 @@ JSValue MyApp::UpdateTask(const ultralight::JSObject &thisObject, const ultralig
 
 
 JSValue MyApp::GetTasksByDate(const ultralight::JSObject &thisObject, const ultralight::JSArgs &args) {
+
     cout << "Called: GetTasksByDate" << endl;
 
     if (args.size() != 1) {
@@ -487,7 +482,8 @@ JSValue MyApp::GetTasksByDate(const ultralight::JSObject &thisObject, const ultr
 }
 
 JSValue MyApp::GetTaskById(const ultralight::JSObject &thisObject, const ultralight::JSArgs &args) {
-    cout << "Called: GetTasksByDate" << endl;
+
+    cout << "Called: GetTaskById" << endl;
 
     if (args.size() != 1) {
         return 0;
@@ -566,9 +562,6 @@ JSValue MyApp::GetTaskById(const ultralight::JSObject &thisObject, const ultrali
 }
 
 JSValue MyApp::SavePreset(const ultralight::JSObject &thisObject, const ultralight::JSArgs &args) {
-    ///
-    /// Return our message to JavaScript as a JSValue.
-    ///
 
     cout << "Called: SavePreset" << endl;
 
@@ -616,12 +609,13 @@ JSValue MyApp::SavePreset(const ultralight::JSObject &thisObject, const ultralig
     sqlite3_finalize(stmt);
     sqlite3_close(db);
 
-    fprintf(stderr, "successfully saved to database\n");
+    cout << "successfully saved to database" << endl;
 
     return 1;
 }
 
 JSValue MyApp::GetAllPresets(const ultralight::JSObject &thisObject, const ultralight::JSArgs &args) {
+
     cout << "Called: GetAllPresets" << endl;
 
     sqlite3 *db;
@@ -683,9 +677,6 @@ JSValue MyApp::GetAllPresets(const ultralight::JSObject &thisObject, const ultra
 }
 
 JSValue MyApp::DeletePreset(const ultralight::JSObject &thisObject, const ultralight::JSArgs &args){
-    ///
-    /// Return our message to JavaScript as a JSValue.
-    ///
 
     cout << "Called: DeletePreset" << endl;
 
@@ -734,7 +725,7 @@ JSValue MyApp::DeletePreset(const ultralight::JSObject &thisObject, const ultral
     sqlite3_finalize(stmt);
     sqlite3_close(db);
 
-    fprintf(stderr, "successfully deleted preset\n");
+    cout << "successfully deleted preset" << endl;
 
     return 1;
 }
@@ -756,35 +747,6 @@ void to_json(json &j, const Task &task) {
              {"endTime",   task.endTime},
              {"comment",   task.comment}};
 }
-
-std::string createString() {
-    return "temporary string";
-}
-
-void printJSValue(JSContextRef ctx, JSValueRef value) {
-    // Check if the value is an exception or a valid value
-    if (JSValueIsUndefined(ctx, value) || JSValueIsNull(ctx, value)) {
-        std::cout << "Value is undefined or null" << std::endl;
-        return;
-    }
-
-    // Convert JSValueRef to a JSStringRef (string representation)
-    JSStringRef stringRef = JSValueToStringCopy(ctx, value, nullptr);
-
-    // Convert JSStringRef to a standard C++ string
-    size_t maxBufferSize = JSStringGetMaximumUTF8CStringSize(stringRef);
-    vector<char> buffer(maxBufferSize);
-    size_t actualSize = JSStringGetUTF8CString(stringRef, &buffer[0], maxBufferSize);
-
-    std::string valueStr(buffer.begin(), buffer.begin() + actualSize - 1); // -1 to exclude the null terminator
-
-    // Print the value
-    std::cout << "JSValue is: " << valueStr << std::endl;
-
-    // Release the JSStringRef
-    JSStringRelease(stringRef);
-}
-
 
 string GetValueOfProperty(JSContextRef ctx, JSObjectRef object, const char *name) {
     // Create JavaScript strings for the property names
@@ -809,49 +771,3 @@ string GetValueOfProperty(JSContextRef ctx, JSObjectRef object, const char *name
 
     return result;
 }
-
-//int MyApp::CreateTasksTableIfNotExist(sqlite3 *db){
-//
-//    const char *createDBSql = "CREATE TABLE IF NOT EXISTS tasks(id INTEGER PRIMARY KEY AUTOINCREMENT, taskName TEXT, date TEXT, startTime TEXT, endTime TEXT, comment TEXT)";
-//
-//    sqlite3_stmt *createDBStatement;
-//    int rc = sqlite3_prepare_v2(db, createDBSql, -1, &createDBStatement, nullptr);
-//
-//    if (rc != SQLITE_OK) {
-//        cout << "error preparing sql statement" << endl;
-//        return 0;
-//    }
-//
-//    rc = sqlite3_step(createDBStatement);
-//    if (rc != SQLITE_DONE) {
-//        cout << "error executing sql statement" << endl;
-//        return 0;
-//    }
-//
-//    sqlite3_finalize(createDBStatement);
-//
-//    return 1;
-//}
-//
-//int CreatePresetsTableIfNotExist(sqlite3 *db){
-//    cout << "Create Presets Table If Not Exist called" << endl;
-//    const char *createDBSql = "CREATE TABLE IF NOT EXISTS presets(name TEXT PRIMARY KEY)";
-//
-//    sqlite3_stmt *createDBStatement;
-//    int rc = sqlite3_prepare_v2(db, createDBSql, -1, &createDBStatement, nullptr);
-//
-//    if (rc != SQLITE_OK) {
-//        cout << "error preparing sql statement" << endl;
-//        return 0;
-//    }
-//
-//    rc = sqlite3_step(createDBStatement);
-//    if (rc != SQLITE_DONE) {
-//        cout << "error executing sql statement" << endl;
-//        return 0;
-//    }
-//
-//    sqlite3_finalize(createDBStatement);
-//    cout << "Create Presets Table If Not Exist completed" << endl;
-//    return 1;
-//}
