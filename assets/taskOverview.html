@@ -37,9 +37,7 @@
                         <input list="task-name-datalist" name="task-name-input" class="rounded-md border-0 pl-1.5 text-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 sm:text-sm sm:leading-6 focus:outline-none"
                                id="task-name-input" type="text"/>
                         <datalist id="task-name-datalist">
-                            <label for="task-name-select"></label>
-                            <select id="task-name-select" class="ring-1 ring-inset ring-gray-300" style="width: 20px;">
-                            </select>
+                            <!-- label + select -->
                         </datalist>
                     </div>
                     <div class="mb-3">
@@ -63,6 +61,11 @@
             </div>
 
             <div class="modal-action">
+                <div class="flex flex-row content-center items-center p-2 select-none">
+                    <label for="task-name-remember-checkbox">Remember Task Name</label>
+                    <input class="m-2 rounded-md border-0 pl-1.5 text-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 sm:text-sm sm:leading-6 focus:outline-none"
+                           id="task-name-remember-checkbox" type="checkbox"/>
+                </div>
                 <form method="dialog">
                     <!-- if there is a button in form, it will close the modal -->
                     <button id="save-task-modal-button" class="btn btn-primary">Save</button>

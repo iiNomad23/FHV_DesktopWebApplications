@@ -151,8 +151,10 @@ function closeModal() {
 }
 
 function addDataListOptions(options = []) {
+    let taskNameDatalistEl = document.getElementById("task-name-datalist");
+    taskNameDatalistEl.innerHTML = createSelectBox();
+
     let taskNameSelectEl = document.getElementById("task-name-select");
-    taskNameSelectEl.innerHTML = "";
 
     options.unshift({"preset": "-"});
 
@@ -281,6 +283,7 @@ function setEvents() {
             let success = CppAPI.updateTask(task);
             if (success) {
                 closeModal();
+                rememberTaskName(task.taskName);
 
                 removeTableRow(task.id);
                 insertTasksIntoTable([task]);
@@ -291,6 +294,7 @@ function setEvents() {
             let taskId = CppAPI.saveTask(task);
             if (taskId > 0) {
                 closeModal();
+                rememberTaskName(task.taskName);
 
                 if (validationObject.date.value === formatDate(new Date())) {
                     task["id"] = taskId;
@@ -306,6 +310,15 @@ function setEvents() {
         event.preventDefault();
         closeModal();
     });
+}
+
+function rememberTaskName(taskName) {
+    let taskNameRememberCheckboxEl = document.getElementById("task-name-remember-checkbox");
+    if (taskNameRememberCheckboxEl == null || !taskNameRememberCheckboxEl.checked) {
+        return;
+    }
+
+    CppAPI.savePreset(taskName);
 }
 
 function isEditWindow() {
@@ -365,4 +378,10 @@ function createTableHTML(tasksExist) {
     } else {
         return `<p>No completed tasks today</p>`;
     }
+}
+
+function createSelectBox() {
+    return `<label for="task-name-select"></label>
+            <select id="task-name-select" class="ring-1 ring-inset ring-gray-300" style="width: 20px;">
+            </select>`
 }
