@@ -44,7 +44,7 @@ function insertTasksIntoTable(tasks = []) {
     }
 
     let editBtnEls = document.querySelectorAll('[id^="edit_"]');
-    editBtnEls.forEach(function(editBtnEl) {
+    editBtnEls.forEach(function (editBtnEl) {
         editBtnEl.addEventListener("click", function (e) {
             let taskId = e.currentTarget.getAttribute('data-taskId');
             let task = CppAPI.getTaskById(taskId)[0];
@@ -58,7 +58,7 @@ function insertTasksIntoTable(tasks = []) {
     });
 
     let deleteBtnEls = document.querySelectorAll('[id^="delete_"]');
-    deleteBtnEls.forEach(function(deleteBtnEl) {
+    deleteBtnEls.forEach(function (deleteBtnEl) {
         deleteBtnEl.addEventListener("click", function (e) {
             let taskId = e.currentTarget.getAttribute('data-taskId');
             if (CppAPI.deleteTaskById(taskId)) {
@@ -151,32 +151,10 @@ function closeModal() {
 }
 
 function addDataListOptions(options = []) {
-    let taskNameDatalistEl = document.getElementById("task-name-datalist");
-    taskNameDatalistEl.innerHTML = createSelectBox();
-
-    let taskNameSelectEl = document.getElementById("task-name-select");
-
     options.unshift({"preset": "-"});
 
-    for (let i = 0; i < options.length; i++) {
-        let option = document.createElement("option");
-        option.value = options[i].preset;
-        option.textContent  = options[i].preset;
-        taskNameSelectEl.appendChild(option);
-    }
-}
-
-function setEvents() {
-    document.getElementById("create-task-button").addEventListener("click", function () {
-        openModal();
-    });
-
-    document.getElementById("search-button").addEventListener("click", function (){
-        let tasks = CppAPI.getTasksByDate(document.getElementById("date-picker").value);
-        document.getElementById("taskTableContainer").innerHTML = createTableHTML(tasks.length > 0);
-
-        insertTasksIntoTable(tasks);
-    });
+    let taskNameDatalistEl = document.getElementById("task-name-datalist");
+    taskNameDatalistEl.innerHTML = createSelectBoxHTML(options);
 
     document.getElementById("task-name-select").addEventListener("change", function () {
         let value = this.value;
@@ -185,6 +163,19 @@ function setEvents() {
         }
 
         document.getElementById("task-name-input").value = value;
+    });
+}
+
+function setEvents() {
+    document.getElementById("create-task-button").addEventListener("click", function () {
+        openModal();
+    });
+
+    document.getElementById("search-button").addEventListener("click", function () {
+        let tasks = CppAPI.getTasksByDate(document.getElementById("date-picker").value);
+        document.getElementById("taskTableContainer").innerHTML = createTableHTML(tasks.length > 0);
+
+        insertTasksIntoTable(tasks);
     });
 
     document.getElementById("save-task-modal-button").addEventListener("click", function (event) {
@@ -380,8 +371,15 @@ function createTableHTML(tasksExist) {
     }
 }
 
-function createSelectBox() {
+function createSelectBoxHTML(options) {
+    let optionsHTML = "";
+
+    for (let i = 0; i < options.length; i++) {
+        optionsHTML += `<option value="${options[i].preset}">${options[i].preset}</option>`;
+    }
+
     return `<label for="task-name-select"></label>
             <select id="task-name-select" class="ring-1 ring-inset ring-gray-300" style="width: 20px;">
+                ${optionsHTML}
             </select>`
 }
